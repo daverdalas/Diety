@@ -1,10 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Register extends CI_Controller {
+class Register extends T01_Controller {
 
 	public function index()
 	{
+        if( $this->isLoggedIn ) redirect('/', 'refresh');
+
         if( count($this->input->post()) > 0 )
         {
             $this->load->library('form_validation');
@@ -24,17 +26,16 @@ class Register extends CI_Controller {
                 $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[6]');
             }
 
-            if ($this->form_validation->run() == FALSE)
+            if ($this->form_validation->run() == TRUE )
             {
-
-            }
-            else
-            {
-                die('aaaaa');
+                $this->load->model('Usermodel');
+                $this->Usermodel->save( $this->input->post() );
+                $this->show('registered');
+                return;
             }
         }
 
-		$this->load->view('register');
+		$this->show('register');
 	}
 
     function username_check($str)
@@ -54,7 +55,7 @@ class Register extends CI_Controller {
 
     function phone_check($str)
     {
-        if ( !preg_match( '/^[0-9]+-?[0-9]+-?[0-9]+-?[0-9]+-?[0-9]*$/', trim($str) ) )
+        if ( !preg_match( '/^\+?[0-9]+-?[0-9]+-?[0-9]+-?[0-9]+-?[0-9]*$/', trim($str) ) )
         {
             $this->form_validation->set_message('phone_check', '%s is not a valid phone');
             return FALSE;

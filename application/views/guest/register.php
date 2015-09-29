@@ -1,3 +1,7 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+?>
+<!DOCTYPE html>
 <html>
 <head>
     <style>
@@ -36,7 +40,7 @@
 
     <label><input type="text" name="email" value="<?=set_value('email');?>"/>email<?=form_error('email');?></label>
     <label><input type="password" name="pass1" value="<?=set_value('pass1');?>"/>hasło<?=form_error('pass1');?></label>
-    <label><input type="password" name="pass1" value="<?=set_value('pass1');?>"/>powt. hasło<?=form_error('pass1');?></label>
+    <label><input type="password" name="pass2" value="<?=set_value('pass1');?>"/>powt. hasło<?=form_error('pass1');?></label>
     <label><input type="text" name="name" value="<?=set_value('name');?>"/>imie<?=form_error('name');?></label>
     <label><input type="text" name="surname" value="<?=set_value('surname');?>"/>nazwisko<?=form_error('surname');?></label>
     <label><input type="text" name="phone" value="<?=set_value('phone');?>"/>telefon<?=form_error('phone');?></label>
@@ -48,6 +52,7 @@
     <label class="nip"><input type="text" name="fvat"/>adres fvat<?=form_error('fvat');?></label>
 
     <?=form_submit("","Zarejestruj");?>
+    <?=anchor('/', 'cancel');?>
     <?=form_close();?>
 </body>
 </html>
