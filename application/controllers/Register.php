@@ -55,7 +55,8 @@ class Register extends T01_Controller {
 
     function phone_check($str)
     {
-        if ( !preg_match( '/^\+?[0-9]+-?[0-9]+-?[0-9]+-?[0-9]+-?[0-9]*$/', trim($str) ) )
+        $str = preg_replace( '/[^0-9]/','',$str );
+        if ( strlen($str) > 11 || strlen($str) < 9 )
         {
             $this->form_validation->set_message('phone_check', '%s is not a valid phone');
             return FALSE;
@@ -68,9 +69,10 @@ class Register extends T01_Controller {
 
     function nip_check($str)
     {
-        if ( !preg_match( '/^(\(d{3}-\d{3}-\d{2}-\d{2})|(d{3}-\d{2}-\d{2}-\d{3})$/', trim($str) ) )
+        $str = preg_replace( '/[^0-9]/','',$str );
+        if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', '%s is not a valid NIP');
+            $this->form_validation->set_message('nip_check', $str.' is not a valid NIP');
             return FALSE;
         }
         else

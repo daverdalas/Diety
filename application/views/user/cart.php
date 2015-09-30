@@ -71,6 +71,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <div id="table"></div>
 <?=anchor('/order', 'kontynuuj zakupy');?><br/>
-<?=anchor('/order/pay', 'realizuj zamówienie');?>
+<?=anchor('/order/addy', 'realizuj zamówienie');?>
 </body>
 </html>
