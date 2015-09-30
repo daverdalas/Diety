@@ -15,6 +15,17 @@ class T01_Controller extends CI_Controller {
         $this->isLoggedIn = isset($this->session->userdata['user']);
     }
 
+    protected function json( $data = array() )
+    {
+         die( json_encode($data, JSON_PRETTY_PRINT) );
+    }
+
+    protected function http404()
+    {
+        set_status_header(404);
+        die("");
+    }
+
     protected function show( $view, $data = array() )
     {
         $dir = $this->isLoggedIn ? "user" : "guest";

@@ -21,6 +21,7 @@ class Login extends T01_Controller {
 
                 if( $session_data != null ) {
                     $this->session->set_userdata('user', $session_data);
+                    $this->session->unset_userdata('cart');
                     redirect('/', 'refresh');
                 }
                 else {
@@ -36,6 +37,7 @@ class Login extends T01_Controller {
     public function out()
     {
         $this->session->unset_userdata('user');
+        $this->session->unset_userdata('cart');
         redirect('/', 'refresh');
     }
 }

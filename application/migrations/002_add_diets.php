@@ -7,6 +7,7 @@
  */
 
 defined('BASEPATH') OR exit('No direct script access allowed');
+set_time_limit(0);
 
 class Migration_Add_diets extends CI_Migration
 {
@@ -27,12 +28,18 @@ class Migration_Add_diets extends CI_Migration
         $this->dbforge->create_table('diets');
 
         $this->dbforge->add_field(array(
+            'id' => array(
+                'type' => 'BIGINT',
+                'unsigned' => TRUE,
+                'auto_increment' => TRUE
+            ),
             'diet' => array('type' => 'BIGINT',),
-            'label' => array('type' => 'VARCHAR', 'constraint' => '255',),
+            'name' => array('type' => 'VARCHAR', 'constraint' => '255',),
             'days' => array('type' => 'BIGINT',),
             'price' => array('type' => 'BIGINT',),
         ));
 
+        $this->dbforge->add_key('id', TRUE);
         $this->dbforge->create_table('diet_pricelist');
 
         $diets = array(
@@ -68,9 +75,9 @@ class Migration_Add_diets extends CI_Migration
                 {
                     $d = array(
                         'diet' => $id,
-                        'label' => $n,
+                        'name' => $n,
                         'days' => $p,
-                        'price' => $p*2000 - floor($p/7)*2500
+                        'price' => $p*$c + 10*$id - floor($p/7)*2500
                     );
                     $this->db->insert('diet_pricelist', $d);
                 }
