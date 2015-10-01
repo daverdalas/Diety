@@ -28,4 +28,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <? endforeach; ?>
 </table>
 
-<h2><?=$cost;?></h2>
+<h2><?=$cost;?> PLN</h2>

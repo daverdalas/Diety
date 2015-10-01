@@ -8,6 +8,8 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once(APPPATH . 'third_party/openpayu/lib/openpayu.php');
+
 class Order extends T01_Controller {
 
     public function index()
@@ -42,12 +44,6 @@ class Order extends T01_Controller {
 
         $this->load->model('Dietmodel');
         $this->show('order', $this->Dietmodel->all());
-    }
-
-    public function pay()
-    {
-        $cart = $this->session->userdata('cart');
-        $this->Debug($cart,true);
     }
 
     public function cart()
@@ -140,25 +136,86 @@ class Order extends T01_Controller {
                 if( $this->input->post("comment") != null )
                     $c->comment = $this->input->post( 'comment' );
 
-                $this->Debug( $c, true );
-                $cart = $this->session->userdata('cart_addy');
-                if( $cart == null ) $cart = array();
+                $c->user = $this->session->userdata['user']->id;
+                $this->load->model('Ordermodel');
+                $order_id = $this->Ordermodel->save( $c, $this->session->userdata('cart') );
 
-                $c = new stdClass();
-                $c->id = $this->input->post('id');
-                $c->from = $this->input->post('date');
-                $c->weekend = $this->input->post('weekends') != null;
-                $c->number = $this->input->post('number');
-
-                array_push( $cart, $c );
-                $this->session->set_userdata('cart', $cart );
-
-                redirect('/order/cart', 'refresh');
-                return;
+                $this->session->unset_userdata('cart');
+                $this->process( $order_id );
             }
         }
 
         $this->show( 'order_addy', array( 'user' => $this->session->userdata['user'] ) );
+    }
+
+    /** ToDo: notyfikacja / zmiana statusu - callback payu */
+    function notify() {
+    }
+
+    /** ToDo: landingpage po powrocie usera z payu */
+    function done() {
+    }
+
+    function process($order_id)
+    {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
+
+        $this->load->model('Ordermodel');
+        $_order = $this->Ordermodel->get_order(
+            $this->session->userdata['user']->id,
+            $order_id,
+            'W'
+        );
+
+        if( $_order == null ) $this->http404();
+        $_order = $_order[0];
+
+        $this->config->load('payu', true);
+        OpenPayU_Configuration::setEnvironment('secure');
+        OpenPayU_Configuration::setMerchantPosId( $this->config->item('PosId', 'payu') );
+        OpenPayU_Configuration::setSignatureKey( $this->config->item('SignatureKey', 'payu') );
+
+        $order = array();
+        $order['notifyUrl'] = base_url().'order/notify';
+        $order['continueUrl'] = base_url().'order/done';
+        $order['customerIp'] = $this->input->ip_address();
+        $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
+        $order['description'] = $this->config->item('title', 'payu');
+        $order['extOrderId'] = $order_id;
+        $order['products'] = array();
+
+        $cost = 0;
+        foreach( $_order->cart as $v ) {
+            array_push(
+                $order['products'],
+                array(
+                    'name' => $v->diet,
+                    'unitPrice' => $v->price,
+                    'quantity' => $v->quantity,
+                )
+            );
+            $cost += $v->price*$v->quantity;
+        }
+        $order['totalAmount'] = $cost;
+        $order['currencyCode'] = 'PLN';
+
+        $order['buyer']['email'] = $_order->data->email;
+        $order['buyer']['phone'] = $_order->data->phone;
+        $order['buyer']['firstName'] = $_order->data->name;
+        $order['buyer']['lastName'] = $_order->data->surname;
+
+        try {
+            $response = OpenPayU_Order::create($order);
+            $status_desc = OpenPayU_Util::statusDesc($response->getStatus());
+            if($response->getStatus() == 'SUCCESS') {
+                redirect($response->getResponse()->redirectUri, 'refresh');
+            }
+            else
+                $this->show( "alert", array( 'msg' => $response->getStatus().': '.$status_desc) );
+            return;
+        }catch (OpenPayU_Exception $e){
+            $this->show("alert", array( 'msg' => (string)$e ) );
+        }
     }
 
     function phone_check($str)

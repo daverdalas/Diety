@@ -74,11 +74,12 @@ class Dietmodel extends CI_Model
             $i->end = $to->format('Y-m-d');
             $p += $price*$order->number;
             $i->cost = $order->number." x ".sprintf("%01.2f", $price)." PLN";
+            $i->unitprice = sprintf("%01.2f", $price);
 
             array_push( $r, $i );
         }
 
-        return array( 'cost' => sprintf("%01.2f PLN", $p), 'cart' => $r );
+        return array( 'cost' => sprintf("%01.2f", $p), 'cart' => $r );
     }
 
     function all()
