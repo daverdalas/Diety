@@ -29,6 +29,9 @@ class Migration_Add_users extends CI_Migration
             'email' => array('type' => 'VARCHAR', 'constraint' => '255',),
             'nip' => array('type' => 'VARCHAR', 'null' => TRUE, 'constraint' => '255',),
             'fvat' => array('type' => 'VARCHAR', 'null' => TRUE, 'constraint' => '255',),
+            'token' => array('type' => 'VARCHAR', 'constraint' => '255',),
+            'role' => array('type' => 'VARCHAR', 'constraint' => '1', 'default' => 'U',),
+            'status' => array('type' => 'VARCHAR', 'constraint' => '1', 'default' => 'N',),
         ));
 
         $this->dbforge->add_key('id', TRUE);

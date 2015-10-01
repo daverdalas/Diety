@@ -8,11 +8,18 @@
 class T01_Controller extends CI_Controller {
 
     protected $isLoggedIn;
+    protected $isAdmin;
 
     function __construct()
     {
         parent::__construct();
         $this->isLoggedIn = isset($this->session->userdata['user']);
+        if( $this->isLoggedIn )
+        {
+            $u = $this->session->userdata['user'];
+            $this->isAdmin = $u->role == 'A';
+        }
+        else $this->isAdmin = false;
     }
 
     protected function json( $data = array() )
@@ -46,6 +53,7 @@ class T01_Controller extends CI_Controller {
 
         $data['__session'] = $this->session->all_userdata;
         $data['__user'] = $this->isLoggedIn;
+        $data['__admin'] = $this->isAdmin;
         $this->load->view( $view, $data );
     }
 

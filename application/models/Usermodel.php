@@ -24,6 +24,14 @@ class Usermodel extends CI_Model {
         return $h == null ? $h : $h[0]->hash;
     }
 
+    function activate( $uid, $token )
+    {
+        $this->db
+            ->where('id', $uid)
+            ->like( 'token', $token )
+            ->update('users', array( 'status' => 'X' ) );
+    }
+
     function get_user( $d )
     {
         $h = $this->db
@@ -39,9 +47,10 @@ class Usermodel extends CI_Model {
     function save( $form )
     {
         $form['hash'] = md5( $form['pass1'] );
+        $form['token'] = md5( time().$form['hash'] );
         unset( $form['pass1'] );
         unset( $form['pass2'] );
-        if( $form['company'] == null )
+        if( !array_key_exists( 'company', $form ) )
         {
             unset( $form['nip'] );
             unset( $form['fvat'] );
@@ -67,5 +76,21 @@ class Usermodel extends CI_Model {
         unset( $form['company'] );
 
         $this->db->insert('users', $form);
+
+        $this->load->library('email');
+        $this->email->from( $_SERVER['___MAIL_USER'], 'cooking.pl' );
+        $this->email->to( $form['email'] );
+        $this->email->subject('Aktywacja konta');
+        $this->email->message(
+            $this->load->view(
+                'email/activation',
+                array(
+                    'user_id' => $this->db->insert_id(),
+                    'token' => $form['token']
+                ),
+                true
+            )
+        );
+        $this->email->send();
     }
 }

@@ -140,6 +140,25 @@ class Order extends T01_Controller {
                 $this->load->model('Ordermodel');
                 $order_id = $this->Ordermodel->save( $c, $this->session->userdata('cart') );
 
+                $this->load->model('Dietmodel');
+                $cart = $this->session->userdata('cart');
+                $this->load->library('email');
+                $this->email->from( $_SERVER['___MAIL_USER'], 'cooking.pl' );
+                $this->email->to( $c->email );
+                $this->email->subject('Twoje zakupy');
+                $this->email->message(
+                    $this->load->view(
+                        'email/order',
+                        array(
+                            'order_id' => $order_id,
+                            'cart' => $this->Dietmodel->cart( $cart ),
+                            'data' => $c
+                        ),
+                        true
+                    )
+                );
+                $this->email->send();
+
                 $this->session->unset_userdata('cart');
                 $this->process( $order_id );
             }
@@ -148,12 +167,36 @@ class Order extends T01_Controller {
         $this->show( 'order_addy', array( 'user' => $this->session->userdata['user'] ) );
     }
 
-    /** ToDo: notyfikacja / zmiana statusu - callback payu */
     function notify() {
-    }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->config->load('payu', true);
+            OpenPayU_Configuration::setEnvironment('secure');
+            OpenPayU_Configuration::setMerchantPosId( $this->config->item('PosId', 'payu') );
+            OpenPayU_Configuration::setSignatureKey( $this->config->item('SignatureKey', 'payu') );
 
-    /** ToDo: landingpage po powrocie usera z payu */
-    function done() {
+            $body = file_get_contents('php://input');
+            $data = trim($body);
+            try {
+                if (!empty($data)) {
+                    $result = OpenPayU_Order::consumeNotification($data);
+                }
+                if ($result->getResponse()->order->orderId) {
+                    /* Check if OrderId exists in Merchant Service, update Order data by OrderRetrieveRequest */
+                    $order = OpenPayU_Order::retrieve($result->getResponse()->order->orderId);
+
+                    if($order->getStatus() == 'SUCCESS'){
+                        $orders = $order->getResponse()->orders;
+                        foreach( $orders as $order )
+                            if( $order->status == 'PAID' )
+                                $this->Ordermodel->activate( $order->orderId );
+
+                        header("HTTP/1.1 200 OK");
+                    }
+                }
+            } catch (OpenPayU_Exception $e) {
+                echo $e->getMessage();
+            }
+        }
     }
 
     function process($order_id)
@@ -177,11 +220,11 @@ class Order extends T01_Controller {
 
         $order = array();
         $order['notifyUrl'] = base_url().'order/notify';
-        $order['continueUrl'] = base_url().'order/done';
+        $order['continueUrl'] = base_url().'';
         $order['customerIp'] = $this->input->ip_address();
         $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
         $order['description'] = $this->config->item('title', 'payu');
-        $order['extOrderId'] = $order_id;
+//        $order['extOrderId'] = "think01-".time().'-'.$order_id;
         $order['products'] = array();
 
         $cost = 0;
@@ -200,7 +243,7 @@ class Order extends T01_Controller {
         $order['currencyCode'] = 'PLN';
 
         $order['buyer']['email'] = $_order->data->email;
-        $order['buyer']['phone'] = $_order->data->phone;
+        $order['buyer']['phone'] = preg_replace( '/[^0-9\+]/','',$_order->data->phone );
         $order['buyer']['firstName'] = $_order->data->name;
         $order['buyer']['lastName'] = $_order->data->surname;
 
@@ -208,6 +251,10 @@ class Order extends T01_Controller {
             $response = OpenPayU_Order::create($order);
             $status_desc = OpenPayU_Util::statusDesc($response->getStatus());
             if($response->getStatus() == 'SUCCESS') {
+                $this->Ordermodel->set_payment_id(
+                    $order_id,
+                    $response->getResponse()->orderId
+                );
                 redirect($response->getResponse()->redirectUri, 'refresh');
             }
             else

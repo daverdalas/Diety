@@ -20,7 +20,7 @@ class Register extends T01_Controller {
             $this->form_validation->set_rules('phone', 'telefon', 'required|min_length[9]|max_length[255]|callback_phone_check');
             $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[6]');
 
-            if( $this->input->post("company") == null )
+            if( $this->input->post("company") != null )
             {
                 $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
                 $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[6]');
@@ -37,6 +37,13 @@ class Register extends T01_Controller {
 
 		$this->show('register');
 	}
+
+    function activate( $uid, $token )
+    {
+        $this->load->model('Usermodel');
+        $this->Usermodel->activate( $uid, $token );
+        redirect('/login', 'refresh');
+    }
 
     function username_check($str)
     {

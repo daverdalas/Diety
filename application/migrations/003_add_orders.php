@@ -36,6 +36,7 @@ class Migration_Add_orders extends CI_Migration
             'nip' => array('type' => 'VARCHAR', 'constraint' => '255',),
             'fvat' => array('type' => 'VARCHAR', 'constraint' => '255',),
             'comment' => array('type' => 'TEXT',),
+            'payment' => array('type' => 'VARCHAR', 'constraint' => '255',),
         ));
 
         $this->dbforge->add_key('id', TRUE);

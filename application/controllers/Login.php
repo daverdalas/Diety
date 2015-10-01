@@ -20,9 +20,19 @@ class Login extends T01_Controller {
                 $session_data = $this->Usermodel->get_user( $this->input->post() );
 
                 if( $session_data != null ) {
-                    $this->session->set_userdata('user', $session_data);
-                    $this->session->unset_userdata('cart');
-                    redirect('/', 'refresh');
+                    switch( $session_data->status ) {
+                        case 'N':
+                            $this->show('login', array('msg' => 'Konto nieaktywne, zobacz email'));
+                            return;
+                        case 'B':
+                            $this->show('login', array('msg' => 'Konto zablokowane'));
+                            return;
+                        default:
+                            $this->session->set_userdata('user', $session_data);
+                            $this->session->unset_userdata('cart');
+                            redirect('/', 'refresh');
+                            break;
+                    }
                 }
                 else {
                     $this->show('login', array( 'msg' => 'Błąd logowania'));

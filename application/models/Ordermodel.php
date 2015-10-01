@@ -14,6 +14,31 @@ class Ordermodel extends CI_Model
         parent::__construct();
     }
 
+    function set_payment_id( $order_id, $payment_id )
+    {
+        $this->db
+            ->where('id', $order_id)
+            ->update('orders', array( 'payment' => $payment_id ) );
+    }
+
+    function activate( $payment_id )
+    {
+        $d = $this->db
+            ->select('id')
+            ->from("orders")
+            ->like('payment', $payment_id)
+            ->get()
+            ->result();
+
+        if( $d == null ) continue;
+        $d = $d[0];
+
+        $this->db
+            ->where('order', $d->id)
+            ->like('status', 'W')
+            ->update('plans', array( 'status' => 'A' ) );
+    }
+
     function save( $order, $cart )
     {
         $this->db->insert('orders', (array)$order);
