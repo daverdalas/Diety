@@ -15,15 +15,15 @@ class Register extends T01_Controller {
             $this->form_validation->set_rules('pass1', 'hasło', 'required|min_length[6]|max_length[255]');
             $this->form_validation->set_rules('pass2', 'powt. hasła', 'required|max_length[255]|matches[pass1]');
 
-            $this->form_validation->set_rules('name', 'imię', 'required|min_length[6]|max_length[255]');
-            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[6]|max_length[255]');
+            $this->form_validation->set_rules('name', 'imię', 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[2]|max_length[255]');
             $this->form_validation->set_rules('phone', 'telefon', 'required|min_length[9]|max_length[255]|callback_phone_check');
-            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[6]');
+            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[3]');
 
             if( $this->input->post("company") != null )
             {
                 $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
-                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[6]');
+                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[3]');
             }
 
             if ($this->form_validation->run() == TRUE )

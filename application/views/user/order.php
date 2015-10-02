@@ -150,7 +150,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </label>
 
 <label>
-    <input type="number" id="number" name="number" min="1" onchange="set_num();" value="<?=set_value('number' );?>"/>
+    <input type="number" id="number" name="number" min="1" onchange="set_num();" value="<?=set_value('number',1 );?>"/>
     <input type="hidden" id="id" name="id" value="<?=set_value('id' );?>"/>
     liczba zestawów<?=form_error('number');?>
 </label>

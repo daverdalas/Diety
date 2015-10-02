@@ -12,6 +12,9 @@ class Admin_panel extends T01_Controller {
 
     public function index()
     {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
         $this->show('panels/admin/index');
     }
+
+
 }

@@ -67,21 +67,21 @@ class Order extends T01_Controller {
             $this->form_validation->set_rules('zgoda2', 'zgoda2', 'required');
 
             $this->form_validation->set_rules('email', 'email', 'required|max_length[255]|valid_email');
-            $this->form_validation->set_rules('name', 'imię', 'required|min_length[6]|max_length[255]');
-            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[6]|max_length[255]');
+            $this->form_validation->set_rules('name', 'imię', 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[2]|max_length[255]');
             $this->form_validation->set_rules('phone', 'telefon', 'required|min_length[9]|max_length[255]|callback_phone_check');
-            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[6]');
+            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[3]');
 
             if( $this->input->post("cnip") != null )
             {
-                $this->form_validation->set_rules('company', 'nazwa firmy', 'required|min_length[6]|max_length[255]');
+                $this->form_validation->set_rules('company', 'nazwa firmy', 'required|min_length[2]|max_length[255]');
                 $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
-                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[6]');
+                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[3]');
             }
 
             if( $this->input->post("cother") != null )
             {
-                $this->form_validation->set_rules('addy2', 'adres dostawy', 'required|min_length[6]');
+                $this->form_validation->set_rules('addy2', 'adres dostawy', 'required|min_length[3]');
             }
 
             $this->form_validation->set_rules('from', 'od', 'required|integer|numeric|greater_than[5]|less_than[11]');
@@ -110,13 +110,18 @@ class Order extends T01_Controller {
                     $c->phone = "+48".substr($c->phone, 2);
 
                 $c->addy = $this->input->post( 'addy' );
-                $c->addy_w = $this->input->post("cother") == null ? $this->input->post( 'addy' ) : $this->input->post( 'addy2' );
+                if( $this->input->post("cother") != null )
+                    $c->addy_w = $this->input->post("cother") == null ? $this->input->post( 'addy' ) : $this->input->post( 'addy2' );
 
                 $c->from = $this->input->post( 'from' );
-                $c->from_w = $this->input->post("cotherh") == null ? $this->input->post( 'from' ) : $this->input->post( 'from1' );
-
                 $c->to = $this->input->post( 'to' );
-                $c->to_w = $this->input->post("cotherh") == null ? $this->input->post( 'to' ) : $this->input->post( 'to1' );
+
+                if( $this->input->post("cotherh") != null )
+                {
+                    $c->from_w = $this->input->post("cotherh") == null ? $this->input->post( 'from' ) : $this->input->post( 'from1' );
+                    $c->to_w = $this->input->post("cotherh") == null ? $this->input->post( 'to' ) : $this->input->post( 'to1' );
+                }
+
 
                 if( $this->input->post("cnip") != null )
                 {
@@ -220,7 +225,7 @@ class Order extends T01_Controller {
 
         $order = array();
         $order['notifyUrl'] = base_url().'order/notify';
-        $order['continueUrl'] = base_url().'';
+        $order['continueUrl'] = base_url().'user_panel/history';
         $order['customerIp'] = $this->input->ip_address();
         $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
         $order['description'] = $this->config->item('title', 'payu');
@@ -228,6 +233,7 @@ class Order extends T01_Controller {
         $order['products'] = array();
 
         $cost = 0;
+        if( count( $_order->cart ) == 0 ) return false;
         foreach( $_order->cart as $v ) {
             array_push(
                 $order['products'],
@@ -242,10 +248,10 @@ class Order extends T01_Controller {
         $order['totalAmount'] = $cost;
         $order['currencyCode'] = 'PLN';
 
-        $order['buyer']['email'] = $_order->data->email;
-        $order['buyer']['phone'] = preg_replace( '/[^0-9\+]/','',$_order->data->phone );
-        $order['buyer']['firstName'] = $_order->data->name;
-        $order['buyer']['lastName'] = $_order->data->surname;
+        $order['buyer']['email'] = $v->email;
+        $order['buyer']['phone'] = preg_replace( '/[^0-9\+]/','',$v->phone );
+        $order['buyer']['firstName'] = $v->name;
+        $order['buyer']['lastName'] = $v->surname;
 
         try {
             $response = OpenPayU_Order::create($order);

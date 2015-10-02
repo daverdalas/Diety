@@ -39,9 +39,17 @@ class Ordermodel extends CI_Model
             ->update('plans', array( 'status' => 'A' ) );
     }
 
-    function save( $order, $cart )
+    function save( $addy, $cart )
     {
-        $this->db->insert('orders', (array)$order);
+        $this->db->insert('orders',
+            array(
+                'user' => $addy->user,
+                'company' => property_exists( $addy,'company') ? $addy->company : null,
+                'nip' => property_exists( $addy,'nip') ? $addy->nip : null,
+                'fvat' => property_exists( $addy,'fvat') ? $addy->fvat : null,
+                'comment' => property_exists( $addy,'comment') ? $addy->comment : "",
+            )
+        );
         $order_id = $this->db->insert_id();
 
         foreach( $cart as $id => $order )
@@ -80,8 +88,20 @@ class Ordermodel extends CI_Model
                 'from' => $from->format('Y-m-d').' 00:00:00',
                 'weekend' => $order->weekend,
                 'days_left' => $days,
+                'days_total' => $days,
                 'quantity' => $order->number,
                 'price' => $price,
+                'user' => $addy->user,
+                'name' => $addy->name,
+                'surname' => $addy->surname,
+                'email' => $addy->email,
+                'phone' => $addy->phone,
+                'addy' => $addy->addy,
+                'addy_w' => property_exists( $addy,'addy_w') ? $addy->addy_w : null,
+                'time_from' => $addy->from,
+                'time_from_w' => property_exists( $addy,'from_w') ? $addy->from_w : null,
+                'time_to' => $addy->to,
+                'time_to_w' => property_exists( $addy,'to_w') ? $addy->to_w : null,
             );
 
             $this->db->insert('plans', $i);
@@ -114,12 +134,105 @@ class Ordermodel extends CI_Model
             $carts =  $query->get()->result();
             if( count($carts) == 0 ) continue;
 
+            $cost = 0;
+            foreach($carts as $cart ) $cost += $cart->price*$cart->quantity;
+
+            $order->price = $cost;
             $r = new stdClass();
             $r->data = $order;
             $r->cart = $carts;
-            array_push( $ret, $r );
+            array_unshift( $ret, $r );
         }
 
         return count( $ret ) ? $ret : null;
+    }
+
+    function get_plan( $user_id, $status = null, $plan_id = null )
+    {
+        $query = $this->db
+            ->select('*')
+            ->from("plans")
+            ->where( "user", $user_id );
+
+        if( $status != null ) $query = $query->where_in( "status", $status );
+        if( $plan_id != null ) $query = $query->where( "id", $plan_id );
+
+        $carts =  $query->get()->result();
+
+        foreach( $carts as $cart )
+        {
+            $cart->banned = $this->db
+                ->select('timestamp')
+                ->from("banned")
+                ->where( "order", $cart->id )
+                ->order_by("timestamp", "asc")
+                ->get()
+                ->result();
+        }
+        return count( $carts ) ? $carts : null;
+    }
+
+    function update( $user_id, $data )
+    {
+        $data['phone'] = preg_replace( '/[^0-9]/','',$data['phone'] );
+
+        if( strlen($data['phone']) > 9 )
+            $data['phone'] = "+".substr($data['phone'], 0, 2).".".substr($data['phone'], 2);
+        else
+            $data['phone'] = "+48".substr($data['phone'], 2);
+
+        $d = array(
+            'name' => $data['name'],
+            'surname' => $data['surname'],
+            'phone' => $data['phone'],
+            'email' => $data['email'],
+            'addy' => $data['addy'],
+            'time_from' => $data['from'],
+            'time_to' => $data['to'],
+            'addy_w' => $data['addy2'],
+            'time_from_w' => $data['from1'],
+            'time_to_w' => $data['to1'],
+            'weekend' => array_key_exists('weekends',$data) ? 1 : 0
+        );
+
+        $this->db
+            ->where('id', $data['id'] )
+            ->where('user', $user_id )
+            ->where_in('status', array( 'W', 'A' ) )
+            ->update('plans', $d );
+
+        if(
+            count(
+                $this->db
+                    ->select('id')
+                    ->from("plans")
+                    ->where('id', $data['id'] )
+                    ->where('user', $user_id )
+                    ->where_in('status', array( 'W', 'A' ) )
+                    ->get()
+                    ->result()
+            ) ==0
+        ) return;
+
+
+        $this->db->delete('banned', array('order' => $data['id']));
+
+        $now = new DateTime();
+        $rows = array();
+        if( !array_key_exists('banned', $data) ) $data['banned'] = array();
+        foreach( $data['banned'] as $date )
+        {
+            $date = DateTime::createFromFormat('Y-m-d', $date );
+            if( $date < $now ) continue;
+            array_push(
+                $rows,
+                array(
+                    'timestamp' => $date->format('Y-m-d').' 00:00:00',
+                    'order' => $data['id']
+                )
+            );
+        }
+
+        if( count($rows) ) $this->db->insert_batch('banned', $rows);
     }
 }
