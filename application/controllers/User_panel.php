@@ -62,6 +62,7 @@ class User_panel extends T01_Controller {
         );
     }
 
+    /** ToDo - zabezpieczenie po id konta */
     public function edit( $id )
     {
         if( !$this->isLoggedIn ) redirect('/login', 'refresh');
@@ -93,6 +94,22 @@ class User_panel extends T01_Controller {
                     $this->session->userdata['user']->id,
                     $this->input->post()
                 );
+
+                $this->load->library('email');
+                $this->email->from( $_SERVER['___MAIL_USER'], 'cooking.pl' );
+                $this->email->to( $this->session->userdata['user']->email );
+                $this->email->subject('Zmiana w planie abonamentu');
+                $this->email->message(
+                    $this->load->view(
+                        'email/change',
+                        array(
+                            'plan' => $this->input->post()
+                        ),
+                        true
+                    )
+                );
+                $this->email->send();
+
                 redirect('/user_panel/history', 'refresh');
             }
         }

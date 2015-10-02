@@ -12,6 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         {
             list-style-type: none;
             padding:0;
+            padding-top:24px;
             margin:0;
         }
         li {
@@ -21,13 +22,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </style>
 </head>
 <body>
-<?=anchor('/user_panel/history', 'historia transakcji');?>
-<?=anchor('/user_panel', 'aktualne diety');?>
+<?=anchor('/', 'home');?>
+<?=anchor('/login/out', 'wyloguj');?>
+<?=anchor('/order', 'zamów');?>
+<?=anchor('/user_panel/history', 'historia konta');?>
 <?=anchor('/user_panel', 'edycja konta');?>
-<br><br>
 <? foreach( $orders as $order ): ?>
     <ul>
         <li><u><b><?=$order->diet;?></b></u></li>
+        <li>pozostało <?=$order->days_left;?> z <?=$order->days_total;?> dostaw</li>
         <li>najbliższa dostawa <?=$order->next;?> od <?=$order->from;?>:00 do <?=$order->to;?>:00</li>
         <li><?=$order->name;?> <?=$order->surname;?></li>
         <li><?=$order->addy;?></li>

@@ -4,8 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        a {
+            display:block;
+        }
+    </style>
 </head>
 <body>
+<?=anchor('/', 'home');?>
+<?=anchor('/login/out', 'wyloguj');?>
+<?=anchor('/admin_panel/users', 'lista klientów');?>
 <pre>
 <b>Panel administratora zawiera:</b>
 - Listę klientów - widoczne imię, nazwisko, wybrana dieta

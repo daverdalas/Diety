@@ -93,4 +93,25 @@ class Usermodel extends CI_Model {
         );
         $this->email->send();
     }
+
+    function get_users()
+    {
+        $users = $this->db
+            ->select('id, name, surname, role, status')
+            ->from("users")
+            ->get()
+            ->result();
+
+        foreach( $users as $user )
+        {
+            $user->plans = $this->db
+                ->select('id, diet')
+                ->from("plans")
+                ->where("status","A")
+                ->get()
+                ->result();
+        }
+
+        return $users;
+    }
 }
