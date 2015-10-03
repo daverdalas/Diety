@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <?=anchor('/login/out', 'wyloguj');?>
 <?=anchor('/order', 'zamów');?>
 <?=anchor('/user_panel/history', 'historia konta');?>
-<?=anchor('/user_panel', 'edycja konta');?>
+<?=anchor('/user_panel/edit_user', 'edycja konta');?>
 <? foreach( $orders as $order ): ?>
     <ul>
         <li><u><b><?=$order->diet;?></b></u></li>

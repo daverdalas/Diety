@@ -27,4 +27,17 @@ class Admin_panel extends T01_Controller {
         );
         $this->show('panels/admin/users', array( 'users' => $users ) );
     }
+
+    public function user( $uid )
+    {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
+        if( !$this->isAdmin ) redirect('/', 'refresh');
+
+        $this->load->model('Usermodel');
+
+        $user = $this->Usermodel->fetch_user( $uid );
+        if( $user == null ) redirect('/admin_panel', 'refresh');
+
+        $this->show('panels/admin/user', array( 'user' => $user ) );
+    }
 }

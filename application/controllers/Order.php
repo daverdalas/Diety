@@ -174,6 +174,7 @@ class Order extends T01_Controller {
 
     function notify() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->load->model('Ordermodel');
             $this->config->load('payu', true);
             OpenPayU_Configuration::setEnvironment('secure');
             OpenPayU_Configuration::setMerchantPosId( $this->config->item('PosId', 'payu') );
@@ -191,9 +192,33 @@ class Order extends T01_Controller {
 
                     if($order->getStatus() == 'SUCCESS'){
                         $orders = $order->getResponse()->orders;
+
+                        $now = new DateTime();
+                        $y = $now->format("Y");
+                        $m = $now->format("m");
+
+                        if( !is_dir( BASEPATH."../invoices" )) mkdir( BASEPATH."../invoices" );
+                        if( !is_dir( BASEPATH."../invoices/$y" )) mkdir( BASEPATH."../invoices/$y" );
+                        if( !is_dir( BASEPATH."../invoices/$y/$m" )) mkdir( BASEPATH."../invoices/$y/$m" );
+                        $dir = BASEPATH."../invoices/$y/$m";
+
                         foreach( $orders as $order )
-                            if( $order->status == 'PAID' )
-                                $this->Ordermodel->activate( $order->orderId );
+                        {
+                            $order = $this->Ordermodel->activate($order->orderId);
+                            $invoice = $this->Ordermodel->make_invoice($order->data->id, $order->user->id);
+                            $order->data->invoice = $invoice;
+                            $order->data->date = $now->format("Y-m-d");
+                            if (!is_file("$dir/$invoice.pdf")) {
+                                $msg = $this->load->view('invoice', array('order' => $order), true);
+                                require_once(BASEPATH . "../html2pdf/html2pdf.class.php");
+                                $html2pdf = new HTML2PDF('P', 'A4', 'en', true, 'UTF-8');
+                                $html2pdf->setDefaultFont("dejavusans");
+                                $html2pdf->pdf->SetDisplayMode('fullpage');
+                                $html2pdf->WriteHTML($msg);
+                                $html2pdf->Output( "$dir/$invoice.pdf", 'F' );
+                                $this->Ordermodel->update_invoice( $invoice, "/invoices/$y/$m/$invoice.pdf" );
+                            }
+                        }
 
                         header("HTTP/1.1 200 OK");
                     }
@@ -203,6 +228,70 @@ class Order extends T01_Controller {
             }
         }
     }
+
+    function invoice( $id )
+    {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
+
+        $uid = $this->session->userdata['user']->id;
+
+        $this->load->model('Ordermodel');
+        $invoice = $this->Ordermodel->get_invoice( $id );
+
+        if( !$this->isAdmin )
+        {
+            if( $invoice->user != $uid )
+                redirect('/user_panel', 'refresh');
+        }
+        $this->load->helper('download');
+        force_download( $invoice->id.".pdf", file_get_contents ( BASEPATH."..".$invoice->path) );
+    }
+
+    /*
+    function test( $pid = 'NXFS7NCJFQ151002GUEST000P01') {
+        $this->load->model('Ordermodel');
+        $this->config->load('payu', true);
+        OpenPayU_Configuration::setEnvironment('secure');
+        OpenPayU_Configuration::setMerchantPosId($this->config->item('PosId', 'payu'));
+        OpenPayU_Configuration::setSignatureKey($this->config->item('SignatureKey', 'payu'));
+
+        $order = OpenPayU_Order::retrieve( $pid );
+
+
+
+        if ($order->getStatus() == 'SUCCESS') {
+            $orders = $order->getResponse()->orders;
+
+            $now = new DateTime();
+            $y = $now->format("Y");
+            $m = $now->format("m");
+
+            if( !is_dir( BASEPATH."../invoices" )) mkdir( BASEPATH."../invoices" );
+            if( !is_dir( BASEPATH."../invoices/$y" )) mkdir( BASEPATH."../invoices/$y" );
+            if( !is_dir( BASEPATH."../invoices/$y/$m" )) mkdir( BASEPATH."../invoices/$y/$m" );
+            $dir = BASEPATH."../invoices/$y/$m";
+
+            foreach ($orders as $order) {
+                if ($order->status == 'CANCELED') {
+                    $order = $this->Ordermodel->activate($order->orderId);
+                    $invoice = $this->Ordermodel->make_invoice($order->data->id, $order->user->id);
+                    $order->data->invoice = $invoice;
+                    $order->data->date = $now->format("Y-m-d");
+                    if (!is_file("$dir/$invoice.pdf")) {
+                        $msg = $this->load->view('invoice', array('order' => $order), true);
+                        require_once(BASEPATH . "../html2pdf/html2pdf.class.php");
+                        $html2pdf = new HTML2PDF('P', 'A4', 'en', true, 'UTF-8');
+                        $html2pdf->setDefaultFont("dejavusans");
+                        $html2pdf->pdf->SetDisplayMode('fullpage');
+                        $html2pdf->WriteHTML($msg);
+                        $html2pdf->Output( "$dir/$invoice.pdf", 'F' );
+                        $this->Ordermodel->update_invoice( $invoice, "/invoices/$y/$m/$invoice.pdf" );
+                    }
+                }
+            }
+        }
+    }
+    */
 
     function process($order_id)
     {

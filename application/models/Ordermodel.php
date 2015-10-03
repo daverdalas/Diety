@@ -37,6 +37,45 @@ class Ordermodel extends CI_Model
             ->where('order', $d->id)
             ->like('status', 'W')
             ->update('plans', array( 'status' => 'A' ) );
+
+        $order = $this->get_order( null, $d->id );
+        $user = $this->db
+            ->select('*')
+            ->from("users")
+            ->where('id', $order[0]->data->user)
+            ->get()
+            ->result();
+
+        if( $user != null ) $order[0]->user = $user[0];
+        return $order[0];
+    }
+
+    function make_invoice( $order_id, $user_id )
+    {
+        $d = $this->db
+            ->select('*')
+            ->from("invoices")
+            ->where( "user", $user_id )
+            ->where( "order", $order_id )
+            ->get()
+            ->result();
+
+        if( $d != null && count($d)>0 ) return $d[0]->id;
+
+        $this->db->insert('invoices',
+            array(
+                'user' => $user_id,
+                'order' => $order_id,
+            )
+        );
+        return $this->db->insert_id();
+    }
+
+    function update_invoice( $id, $path )
+    {
+        $this->db
+            ->where('id', $id)
+            ->update('invoices', array( 'path' => $path ) );
     }
 
     function save( $addy, $cart )
@@ -109,13 +148,13 @@ class Ordermodel extends CI_Model
         return $order_id;
     }
 
-    function get_order( $user_id, $order_id = null, $status = null )
+    function get_order( $user_id = null, $order_id = null, $status = null )
     {
         $query = $this->db
             ->select('*')
-            ->from("orders")
-            ->where( "user", $user_id );
+            ->from("orders");
 
+        if( $user_id != null ) $query = $query->where( "user", $user_id );
         if( $order_id != null ) $query = $query->where( "id", $order_id );
         $orders =  $query->get()->result();
 
@@ -136,8 +175,20 @@ class Ordermodel extends CI_Model
 
             $cost = 0;
             foreach($carts as $cart ) $cost += $cart->price*$cart->quantity;
-
             $order->price = $cost;
+
+            $invoice = $this->db
+                ->select('id')
+                ->from("invoices")
+                ->where( "order", $order->id )
+                ->where( "path IS NOT NULL", null )
+                ->get()
+                ->result();
+
+            if( $invoice != null && count($invoice)>0 ) $invoice = $invoice[0]->id;
+            else $invoice = null;
+            $order->invoice = $invoice;
+
             $r = new stdClass();
             $r->data = $order;
             $r->cart = $carts;
@@ -147,13 +198,25 @@ class Ordermodel extends CI_Model
         return count( $ret ) ? $ret : null;
     }
 
-    function get_plan( $user_id, $status = null, $plan_id = null )
+    function get_invoice( $id )
+    {
+        $r = $this->db
+            ->select('*')
+            ->from("invoices")
+            ->where('id', $id )
+            ->get()
+            ->result();
+
+        return $r != null && count($r) ? $r[0] : null;
+    }
+
+    function get_plan( $user_id = null, $status = null, $plan_id = null )
     {
         $query = $this->db
             ->select('*')
-            ->from("plans")
-            ->where( "user", $user_id );
+            ->from("plans");
 
+        if( $user_id != null ) $query = $query->where( "user", $user_id );
         if( $status != null ) $query = $query->where_in( "status", $status );
         if( $plan_id != null ) $query = $query->where( "id", $plan_id );
 
@@ -172,7 +235,7 @@ class Ordermodel extends CI_Model
         return count( $carts ) ? $carts : null;
     }
 
-    function update( $user_id, $data )
+    function update( $data )
     {
         $data['phone'] = preg_replace( '/[^0-9]/','',$data['phone'] );
 
@@ -197,7 +260,6 @@ class Ordermodel extends CI_Model
 
         $this->db
             ->where('id', $data['id'] )
-            ->where('user', $user_id )
             ->where_in('status', array( 'W', 'A' ) )
             ->update('plans', $d );
 
@@ -207,7 +269,6 @@ class Ordermodel extends CI_Model
                     ->select('id')
                     ->from("plans")
                     ->where('id', $data['id'] )
-                    ->where('user', $user_id )
                     ->where_in('status', array( 'W', 'A' ) )
                     ->get()
                     ->result()
@@ -234,5 +295,29 @@ class Ordermodel extends CI_Model
         }
 
         if( count($rows) ) $this->db->insert_batch('banned', $rows);
+    }
+
+    function checkPlanOwner( $order_id, $uid )
+    {
+        return count(
+                    $this->db
+                    ->select('*')
+                    ->from("plans")
+                    ->where( "user", $uid )
+                    ->get()
+                    ->result()
+                ) > 0;
+    }
+
+    function checkOrderOwner( $order_id, $uid )
+    {
+        return count(
+            $this->db
+                ->select('*')
+                ->from("orders")
+                ->where( "user", $uid )
+                ->get()
+                ->result()
+        ) > 0;
     }
 }

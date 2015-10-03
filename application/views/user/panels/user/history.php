@@ -87,7 +87,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             )
                         )
                     )
-                    echo anchor("/order/invoice/".$order->data->id, "pobierz fakturę");
+                    if( $order->data->invoice != 0 ) echo anchor("/order/invoice/".$order->data->invoice, "pobierz fakturę");
                 ?>
             </li>
             <li><i><?=$order->data->comment;?></i></li>

@@ -44,6 +44,47 @@ class Usermodel extends CI_Model {
         return $h == null ? $h : $h[0];
     }
 
+    function fetch_user( $id )
+    {
+        $h = $this->db
+            ->select('*')
+            ->from("users")
+            ->where('id',$id )
+            ->get()
+            ->result();
+        return $h == null ? $h : $h[0];
+    }
+
+    function update( $uid, $form )
+    {
+        if( !array_key_exists( 'company', $form ) )
+        {
+            unset( $form['nip'] );
+            unset( $form['fvat'] );
+        }
+        else{
+            $form['nip'] = preg_replace( '/[^0-9]/','',$form['nip'] );
+            $form['nip'] = sprintf(
+                '%s-%s-%s-%s',
+                substr($form['nip'], 0, 3),
+                substr($form['nip'], 3, 3),
+                substr($form['nip'], 6, 2),
+                substr($form['nip'], 8, 2)
+            );
+        }
+
+        $form['phone'] = preg_replace( '/[^0-9]/','',$form['phone'] );
+
+        if( strlen($form['phone']) > 9 )
+            $form['phone'] = "+".substr($form['phone'], 0, 2).".".substr($form['phone'], 2);
+        else
+            $form['phone'] = "+48".substr($form['phone'], 2);
+
+        unset( $form['company'] );
+
+        $this->db->update('users', $form);
+    }
+
     function save( $form )
     {
         $form['hash'] = md5( $form['pass1'] );
