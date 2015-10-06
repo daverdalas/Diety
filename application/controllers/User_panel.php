@@ -16,34 +16,9 @@ class User_panel extends T01_Controller {
 
         $this->load->model('Ordermodel');
         $plans = $this->Ordermodel->get_plan( $this->session->userdata['user']->id, array('A') );
-        foreach( $plans as $plan )
-        {
-            $now = new DateTime();
-            $now->modify( "+1 ".( $plan->weekend ? "day" : "weekday" ) );
-            for( $i=0; $i<count($plan->banned); $i++ )
-            {
-                $date = DateTime::createFromFormat('Y-m-d H:i:s', $plan->banned[$i]->timestamp );
-                if( $date == $now )
-                    $now->modify( "+1 ".( $plan->weekend ? "day" : "weekday" ) );
-                if( $date > $now ) break;
-            }
-            $plan->next = $now->format('Y-m-d');
-            $d = $now->format('w');
+        $calendars = $this->Ordermodel->get_callendar( $this->session->userdata['user']->id );
 
-            if( $plan->weekend == 1 && ( $d == 0 || $d == 6 ) )
-            {
-                $plan->from = $plan->time_from_w == null ? $plan->time_from : $plan->time_from_w;
-                $plan->to = $plan->time_to_w == null ? $plan->time_to : $plan->time_to_w;
-                $plan->addy = $plan->addy_w == null ? $plan->time_to : $plan->addy_w;
-            }
-            else
-            {
-                $plan->from = $plan->time_from;
-                $plan->to = $plan->time_to;
-            }
-        }
-
-        $this->show('panels/user/index', array( 'orders' => $plans ));
+        $this->show('panels/user/index', array( 'orders' => $plans, 'calendars' => $calendars ));
     }
 
     public function history( $uid = 0 )

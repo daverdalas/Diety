@@ -27,6 +27,7 @@ class Migration_Add_orders extends CI_Migration
             'company' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE,),
             'nip' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE,),
             'fvat' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE,),
+            'status' => array('type' => 'VARCHAR', 'constraint' => '10', 'null' => TRUE, 'default' => 'NEW'),
         ));
 
         $this->dbforge->add_key('id', TRUE);

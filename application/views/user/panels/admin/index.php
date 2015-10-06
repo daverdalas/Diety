@@ -11,9 +11,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </style>
 </head>
 <body>
+<? $today = ( new DateTime() )->format('Y-m-d'); ?>
 <?=anchor('/', 'home');?>
 <?=anchor('/login/out', 'wyloguj');?>
 <?=anchor('/admin_panel/users', 'lista klientów');?>
+<?=anchor("/admin_panel/shedule/$today", "lista dostaw na $today");?>
+<?=anchor('/admin_panel/diets', 'plany abonamentowe');?>
 <pre>
 <b>Panel administratora zawiera:</b>
 - Listę klientów - widoczne imię, nazwisko, wybrana dieta

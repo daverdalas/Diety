@@ -21,8 +21,19 @@ class Ordermodel extends CI_Model
             ->update('orders', array( 'payment' => $payment_id ) );
     }
 
-    function activate( $payment_id )
+    function update_status( $payment_id, $status )
     {
+        $this->db
+            ->like('payment', $payment_id)
+            ->update('orders', array( 'status' => $status ) );
+    }
+
+    function activate( $payment_id, $status = 'X' )
+    {
+        $this->db
+            ->like('payment', $payment_id)
+            ->update('orders', array( 'status' => $status ) );
+
         $d = $this->db
             ->select('id')
             ->from("orders")
@@ -148,7 +159,7 @@ class Ordermodel extends CI_Model
         return $order_id;
     }
 
-    function get_order( $user_id = null, $order_id = null, $status = null )
+    function get_order( $user_id = null, $order_id = null, $status = null, $carts=true )
     {
         $query = $this->db
             ->select('*')
@@ -159,6 +170,8 @@ class Ordermodel extends CI_Model
         $orders =  $query->get()->result();
 
         if( $orders == null ) return null;
+
+        if( $carts != true ) return $orders;
 
         $ret = array();
         foreach( $orders as $order )
@@ -204,6 +217,20 @@ class Ordermodel extends CI_Model
             ->select('*')
             ->from("invoices")
             ->where('id', $id )
+            ->where('path IS NOT NULL', null )
+            ->get()
+            ->result();
+
+        return $r != null && count($r) ? $r[0] : null;
+    }
+
+    function get_invoice4order( $id )
+    {
+        $r = $this->db
+            ->select('*')
+            ->from("invoices")
+            ->where('order', $id )
+            ->where('path IS NOT NULL', null )
             ->get()
             ->result();
 
@@ -319,5 +346,159 @@ class Ordermodel extends CI_Model
                 ->get()
                 ->result()
         ) > 0;
+    }
+
+    function shedule( $day )
+    {
+        return $this->db
+            ->select(
+                "date(calendar.day) as 'date', ".
+                "users.name, ".
+                "users.surname, ".
+                "plans.diet, ".
+                "plans.phone, ".
+                "calendar.from, ".
+                "calendar.to, ".
+                "calendar.addy, ".
+                "plans.quantity"
+            )
+            ->from("calendar")
+            ->join('users', 'users.id = calendar.user', 'left')
+            ->join('plans', 'plans.id = calendar.plan', 'left')
+            ->where( 'date(day)', $day )
+            ->order_by("users.surname, users.name, plans.diet", "asc")
+            ->get()->result();
+    }
+
+    private $dt = 0;
+
+    function calendar()
+    {
+        $now = new DateTime();
+        $now->modify( $this->dt." day" );
+        echo $now->format('Y-m-d');
+        $hour = $now->format('G');
+
+
+        $plans = $this->db
+                ->select(
+                    "plans.*,".
+                    "( plans.days_total - sum( date(calendar.day) < '".$now->format('Y-m-d')."' AND `calendar`.`day` is not null ) ) as 'days_future',"
+                    )
+                ->from("plans")
+                ->join('calendar', 'plans.id = calendar.plan', 'left')
+                //->where( 'date(calendar.day) <', $deadline )
+                ->where( 'plans.status', 'A' )
+                //->or_where( 'calendar.day is null', null )
+                ->group_by("plans.id")->get()->result();
+        //        die( $this->db->last_query());
+        //echo '<pre>';
+        // print_r( $plans);exit;
+
+        $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
+        $deadline = $now->format('Y-m-d');
+
+        $this->db
+            ->where( 'date(day) >=', $deadline )
+            ->delete( 'calendar' );
+
+        $callendars = array();
+        foreach( $plans as $plan ) {
+            $banned = $this->db
+                ->select('timestamp')
+                ->from("banned")
+                ->where("order", $plan->id)
+                ->order_by("timestamp", "asc")
+                ->get()
+                ->result();
+
+            $now = new DateTime();
+            $now->modify( $this->dt." day" );
+            $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
+
+            $from = DateTime::createFromFormat('Y-m-d H:i:s', $plan->from );
+            //echo '<pre>'; print_r( $plan);
+            //echo( "<pre>".$dt." day<br>".$now->format('Y-m-d')."<br>".$from->format('Y-m-d'));
+
+            $now = $from > $now ? $from : $now;
+            //echo '<pre>';
+
+            $left = $plan->days_future;
+            $now->modify("-1 day");
+            while ($left > 0) {
+                $now->modify("+1 " . ($plan->weekend ? "day" : "weekday"));
+                for ($i = 0; $i < count($banned); $i++) {
+                    $date = DateTime::createFromFormat('Y-m-d H:i:s', $banned[$i]->timestamp);
+                    if ($date == $now)
+                        $now->modify("+1 " . ($plan->weekend ? "day" : "weekday"));
+                    if ($date > $now) break;
+                }
+
+                $w = $now->format('w');
+
+                $d = array(
+                    'plan' => $plan->id,
+                    'user' => $plan->user,
+                    'day' => $now->format('Y-m-d').' 00:00:00',
+                    'weekend' => $w == 0 || $w == 6,
+                );
+
+                if ($plan->weekend == 1 && ($w == 0 || $w == 6)) {
+                    $d['from'] = $plan->time_from_w == null ? $plan->time_from : $plan->time_from_w;
+                    $d['to'] = $plan->time_to_w == null ? $plan->time_to : $plan->time_to_w;
+                    $d['addy'] = $plan->addy_w == null ? $plan->time_to : $plan->addy_w;
+                } else {
+                    $d['from'] = $plan->time_from;
+                    $d['to'] = $plan->time_to;
+                    $d['addy'] = $plan->addy;
+                }
+
+                //if( $plan->id == 6 ) print_r( $d );
+
+                array_push($callendars, $d);
+                $left--;
+            }
+
+            $this->db
+                ->where('id', $plan->id)
+                ->update(
+                    'plans',
+                    array(
+                        'days_left' => $plan->days_future,
+                        'status' => $plan->days_future > 0 ? 'A' : 'X',
+                        'from' => $plan->from,
+                    )
+                );
+        }
+
+        $this->db->insert_batch( 'calendar', $callendars );
+    }
+
+    function get_callendar( $uid )
+    {
+        $now = new DateTime();
+        $now->modify( $this->dt." day" );
+        $now = $now->format('Y-m-d').' 00:00:00';
+
+        $c = $this->db
+            ->select('*')
+            ->from("calendar")
+            ->where("user", $uid)
+            ->where( 'date(calendar.day) >=', $now )
+            ->order_by("day", "asc")
+            ->get()
+            ->result();
+
+        $calendar = array();
+        foreach( $c as $entry )
+        {
+            if( !array_key_exists( $entry->plan, $calendar) )
+                $calendar[ $entry->plan ] = array();
+
+            $entry->day = DateTime::createFromFormat('Y-m-d H:i:s', $entry->day )->format('Y-m-d');
+            array_push( $calendar[ $entry->plan ], $entry );
+        }
+
+        return $calendar;
     }
 }

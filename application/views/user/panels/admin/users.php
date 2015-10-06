@@ -50,9 +50,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <? foreach( $users as $user ): ?>
         <td><?=anchor('/admin_panel/user/'.$user->id, $user->name." ".$user->surname);?></td>
         <td>
+            <ul>
             <? foreach( $user->plans as $plan ): ?>
-                <?=anchor('/user_panel/edit/'.$plan->id, $plan->diet);?>
+                <li><?=$plan->diet?></li>
             <? endforeach; ?>
+            </ul>
         </td>
     <? endforeach; ?>
 </table>

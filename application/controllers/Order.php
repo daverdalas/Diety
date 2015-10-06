@@ -188,7 +188,8 @@ class Order extends T01_Controller {
                 }
                 if ($result->getResponse()->order->orderId) {
                     /* Check if OrderId exists in Merchant Service, update Order data by OrderRetrieveRequest */
-                    $order = OpenPayU_Order::retrieve($result->getResponse()->order->orderId);
+                    $payment = $result->getResponse()->order->orderId;
+                    $order = OpenPayU_Order::retrieve($payment);
 
                     if($order->getStatus() == 'SUCCESS'){
                         $orders = $order->getResponse()->orders;
@@ -204,12 +205,12 @@ class Order extends T01_Controller {
 
                         foreach( $orders as $order )
                         {
-                            $order = $this->Ordermodel->activate($order->orderId);
+                            $order = $this->Ordermodel->activate($order->orderId, $order->getStatus() );
                             $invoice = $this->Ordermodel->make_invoice($order->data->id, $order->user->id);
                             $order->data->invoice = $invoice;
                             $order->data->date = $now->format("Y-m-d");
                             if (!is_file("$dir/$invoice.pdf")) {
-                                $msg = $this->load->view('invoice', array('order' => $order), true);
+                                $msg = $this->load->view('pdf/invoice', array('order' => $order), true);
                                 require_once(BASEPATH . "../html2pdf/html2pdf.class.php");
                                 $html2pdf = new HTML2PDF('P', 'A4', 'en', true, 'UTF-8');
                                 $html2pdf->setDefaultFont("dejavusans");
@@ -451,4 +452,5 @@ class Order extends T01_Controller {
             return TRUE;
         }
     }
+
 }

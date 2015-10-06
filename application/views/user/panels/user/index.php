@@ -31,9 +31,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <ul>
         <li><u><b><?=$order->diet;?></b></u></li>
         <li>pozostało <?=$order->days_left;?> z <?=$order->days_total;?> dostaw</li>
-        <li>najbliższa dostawa <?=$order->next;?> od <?=$order->from;?>:00 do <?=$order->to;?>:00</li>
+        <li>najbliższa dostawa
+            <?=$calendars[$order->id][0]->day;?>
+            od <?=$calendars[$order->id][0]->from;?>:00
+            do <?=$calendars[$order->id][0]->to;?>:00
+        </li>
         <li><?=$order->name;?> <?=$order->surname;?></li>
-        <li><?=$order->addy;?></li>
+        <li><?=$calendars[$order->id][0]->addy;?></li>
         <li><?=anchor('/user_panel/edit/'.$order->id, 'edytuj');?></li>
     </ul>
 <? endforeach; ?>
