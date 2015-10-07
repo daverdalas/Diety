@@ -36,11 +36,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <? foreach( $diets as $diet ): ?>
     <?=anchor('/admin_panel/diet/'.$diet[0]->id, $diet[0]->name);?>
 <? endforeach; ?>
-<?=form_open('/admin_panel/diets/');?>
-
-<label><input type="text" name="name" value="<?=set_value('name');?>"/>nazwa diety<?=form_error('name');?></label>
-<?=form_submit("","dodaj dietę");?>
-
-<?=form_close();?>
+<?=anchor('/admin_panel/diet/0', '-- nowa dieta --');?>
 </body>
 </html>

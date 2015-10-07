@@ -104,7 +104,16 @@ class Admin_panel extends T01_Controller {
         die( 'brak dostaw na '.$date );
     }
 
-    public function diets()
+    public function diets( $step = 0 )
+    {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
+        if( !$this->isAdmin ) redirect('/', 'refresh');
+
+        $this->load->model('Dietmodel');
+        $this->show( 'panels/admin/diets', $this->Dietmodel->all() );
+    }
+
+    public function diet( $id = 0 )
     {
         if( !$this->isLoggedIn ) redirect('/login', 'refresh');
         if( !$this->isAdmin ) redirect('/', 'refresh');
@@ -113,13 +122,38 @@ class Admin_panel extends T01_Controller {
 
         if( count($this->input->post()) > 0 ) {
             $this->load->library('form_validation');
-            $this->form_validation->set_rules('name', 'nazwa diety', 'required|min_length[3]|max_length[255]|callback_diet_check');
-            if ($this->form_validation->run() == TRUE ) {
 
+            if( $id == 0 ) $this->form_validation->set_rules('name', 'nazwa diety', 'required|min_length[3]|max_length[255]|callback_diet_check');
+
+            $prices = $this->input->post('price');
+            foreach( $prices as $k => $v )
+            {
+                foreach( $v as $k1 => $v1 )
+                    $this->form_validation->set_rules("price[$k][$k1]", '', 'required|integer');
+            }
+
+            if ($this->form_validation->run() == TRUE ) {
+                $this->Dietmodel->add( $id == 0, $this->input->post());
+            /*
+                if( $id == 0 ) {
+                    foreach( $prices[0] as $kcal => $price ) {
+                        $diet = array(
+                            'name' => $this->input->post('name'),
+                            'calories' => $kcal
+                        );
+                        $d = $this->Dietmodel->new_diet($id)
+                        $this->Debug( $diet, true );
+                    }
+                }
+            */
+                $this->Debug( $this->input->post(), true );
             }
         }
 
-        $this->show( 'panels/admin/diets', $this->Dietmodel->all() );
+        $this->show(
+            'panels/admin/diet',
+            $this->Dietmodel->get($id)
+        );
     }
 
     function diet_check($str)

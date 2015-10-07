@@ -82,6 +82,94 @@ class Dietmodel extends CI_Model
         return array( 'cost' => sprintf("%01.2f", $p), 'cart' => $r );
     }
 
+    function get($id)
+    {
+        $diet = $this->db
+            ->select('*')
+            ->from("diets")
+            ->where('id', $id )
+            ->get()
+            ->result();
+
+        if( $diet == null ) return null;
+        if( count($diet) != 1 ) return null;
+
+        $key = $diet[0]->name;
+
+        $d = $this->db
+            ->select('diet_pricelist.*, diets.calories, diets.name as "label"')
+            ->from("diet_pricelist")
+            ->join("diets", "diets.id = diet_pricelist.diet", "left")
+            ->like("diets.name", $key )
+            ->get()
+            ->result();
+
+        $r = array();
+
+        foreach( $d as $v )
+        {
+            if( !array_key_exists($v->name, $r ))
+                $r[$v->name] = array();
+
+            $r[$v->name][$v->calories] = $v;
+        }
+        return array( 'name' => $key, 'diet' => $r );
+    }
+
+    function add( $new, $data )
+    {
+        $ids = array();
+        if( $new )
+        {
+            foreach( $data['price'][0] as $kcal => $price ) {
+                $this->db->insert(
+                    'diets',
+                    array(
+                        'name' => $data['name'],
+                        'calories' => $kcal
+                    )
+                );
+                $id = $this->db->insert_id();
+
+                foreach( $data['period'] as $n => $period )
+                $this->db->insert(
+                    'diet_pricelist',
+                    array(
+                        'diet' => $id,
+                        'name' => $period,
+                        'days' => $data['days'][$n],
+                        'price' => $data['price'][$n][$kcal]
+                    )
+                );
+            }
+        }
+        else
+        {
+            $d = $this->db
+                ->select('*')
+                ->from("diets")
+                ->like("name", $data['name'] )
+                ->get()
+                ->result();
+
+            foreach( $d as $diet ) {
+                foreach ($data['period'] as $n => $period)
+                    $this->db
+                        ->where('diet', $diet->id)
+                        ->where('name', $period)
+                        ->where('days', $data['days'][$n])
+                        ->update(
+                            'diet_pricelist',
+                            array(
+                                'price' => $data['price'][$n][$diet->calories]
+                            )
+                        );
+            }
+        }
+
+
+    }
+
     function all()
     {
         $diets = $this->db
