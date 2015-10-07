@@ -134,19 +134,7 @@ class Admin_panel extends T01_Controller {
 
             if ($this->form_validation->run() == TRUE ) {
                 $this->Dietmodel->add( $id == 0, $this->input->post());
-            /*
-                if( $id == 0 ) {
-                    foreach( $prices[0] as $kcal => $price ) {
-                        $diet = array(
-                            'name' => $this->input->post('name'),
-                            'calories' => $kcal
-                        );
-                        $d = $this->Dietmodel->new_diet($id)
-                        $this->Debug( $diet, true );
-                    }
-                }
-            */
-                $this->Debug( $this->input->post(), true );
+                redirect('/admin_panel/diets', 'refresh');
             }
         }
 
