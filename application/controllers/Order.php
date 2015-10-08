@@ -377,7 +377,7 @@ class Order extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) > 11 || strlen($str) < 9 )
         {
-            $this->form_validation->set_message('phone_check', '%s is not a valid phone');
+            $this->form_validation->set_message('phone_check', 'form_validation_t01_phone');
             return FALSE;
         }
         else
@@ -391,7 +391,7 @@ class Order extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', $str.' is not a valid NIP');
+            $this->form_validation->set_message('nip_check', 'form_validation_t01_nip');
             return FALSE;
         }
         else
@@ -440,7 +440,7 @@ class Order extends T01_Controller {
 
         if ( $date < $now )
         {
-            $this->form_validation->set_message('date_check', 'data '.$str.' wskazuje na przeszłość' );
+            $this->form_validation->set_message('date_check', 'form_validation_t01_date' );
             return FALSE;
         }
         else
@@ -455,7 +455,7 @@ class Order extends T01_Controller {
 
         if ( $this->Dietmodel->check( $id ) == null )
         {
-            $this->form_validation->set_message('id_check', 'błedna konfiguracja diety' );
+            $this->form_validation->set_message('id_check', 'form_validation_t01_diet' );
             return FALSE;
         }
         else

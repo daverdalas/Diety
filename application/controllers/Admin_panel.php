@@ -177,7 +177,7 @@ class Admin_panel extends T01_Controller {
         $d = $this->Dietmodel->all()['diets'];
         if ( array_key_exists($str,$d) )
         {
-            $this->form_validation->set_message('diet_check', $str.' already exists');
+            $this->form_validation->set_message('diet_check', 'form_validation_t01_exists');
             return FALSE;
         }
         else

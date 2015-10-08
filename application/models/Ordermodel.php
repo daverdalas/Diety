@@ -491,7 +491,7 @@ class Ordermodel extends CI_Model
             ->from("calendar")
             ->where("user", $uid)
             ->where( 'date(calendar.day) >=', $now )
-            ->_by("day", "asc")
+            ->order_by("day", "asc")
             ->get()
             ->result();
 

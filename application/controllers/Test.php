@@ -23,6 +23,52 @@ class Test extends T01_Controller {
 
         $this->make_users();
         $this->put_orders();
+        $this->put_diets();
+    }
+
+    private function put_diets()
+    {
+        $diets = array(
+            "STANDARD",
+            "SPORT",
+            "WEGE",
+            "WEGE+FISH",
+            "BEZGLUTEN"
+        );
+
+        $periods = array(
+            "TESTOWA" => 1,
+            "1 DZIEN" => 1,
+            "1 TYDZIEN" => 7,
+            "2 TYGODNIE" => 14,
+            "3 TYGODNIE" => 21,
+            "4 TYGODNIE" => 28,
+        );
+
+        foreach( $diets as $diet )
+        {
+            for( $c=500; $c<3000; $c+=500 ) {
+                $d = array(
+                    'name' => $diet,
+                    'calories' => $c
+                );
+
+                $this->db->insert('diets', $d);
+
+                $id = $this->db->insert_id();
+
+                foreach( $periods as $n => $p )
+                {
+                    $d = array(
+                        'diet' => $id,
+                        'name' => $n,
+                        'days' => $p,
+                        'price' => $p*$c + 10*$id - floor($p/7)*2500
+                    );
+                    $this->db->insert('diet_pricelist', $d);
+                }
+            }
+        }
     }
 
     private function put_orders()

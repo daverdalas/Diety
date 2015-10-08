@@ -51,7 +51,7 @@ class Register extends T01_Controller {
 
         if ( $this->Usermodel->get_hash( $str ) != null )
         {
-            $this->form_validation->set_message('username_check', '%s is already at the database');
+            $this->form_validation->set_message('username_check', 'form_validation_t01_exists');
             return FALSE;
         }
         else
@@ -79,7 +79,7 @@ class Register extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', $str.' is not a valid NIP');
+            $this->form_validation->set_message('nip_check', '%s is not a valid nip');
             return FALSE;
         }
         else
