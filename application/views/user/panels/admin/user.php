@@ -40,6 +40,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <? foreach( $plans as $order ): ?>
     <ul>
         <li><u><b><?=$order->diet;?></b></u></li>
+        <li><?=anchor("/order/delete/".$order->id, "usuń zamówienie");?></li>
         <li>pozostało <?=$order->days_left;?> z <?=$order->days_total;?> dostaw</li>
 
         <? if( array_key_exists( $order->id, $calendars ) && count($calendars[$order->id]) ): ?>

@@ -361,6 +361,17 @@ class Order extends T01_Controller {
         }
     }
 
+    function delete( $id )
+    {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
+        if( !$this->isAdmin ) redirect('/', 'refresh');
+
+        $this->load->model('Ordermodel');
+        $this->Ordermodel->update_plan_status( $id, 'D' );
+
+        redirect('/admin_panel', 'refresh');
+    }
+
     function phone_check($str)
     {
         $str = preg_replace( '/[^0-9]/','',$str );

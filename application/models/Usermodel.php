@@ -135,22 +135,36 @@ class Usermodel extends CI_Model {
         $this->email->send();
     }
 
-    function get_users()
+    function get_users( $page, $filter = null, $filter_value = null )
     {
-        $users = $this->db
-            ->select('id, name, surname, role, status')
-            ->from("users")
-            ->get()
-            ->result();
+        $q = $this->db->select('users.id, users.name, users.surname, users.role, users.status')->from("users");
+
+        $users = 0;
+        if( $filter == 'name' ) $q = $q->like('name', $filter_value );
+        if( $filter == 'diet' )
+        {
+            $q = $q
+                ->join("plans","plans.user=users.id","left")
+                ->like('plans.diet', $filter_value )
+                ->group_by("users.id");
+        }
+        if( $filter == 'delivery' )
+        {
+            $q = $q
+                ->join("calendar","calendar.user=users.id","left")
+                ->where( 'date(calendar.day)', $filter_value )
+                ->group_by("users.id");
+        }
+        if( $filter == 'deadline' )
+        {
+            $users = $this->db->query("SELECT `users`.`id`, `users`.`name`, `users`.`surname`, `users`.`role`, `users`.`status` FROM `users` LEFT JOIN ( SELECT max(date(`day`)) as 'd', `calendar`.`user`FROM `calendar` GROUP BY `calendar`.`user` ) AS `cal` ON `cal`.`user`=`users`.`id` WHERE `cal`.`d` = '$filter_value' GROUP BY `users`.`id` ORDER BY `users`.`name` ASC, `users`.`surname` ASC LIMIT ".($page*100).",100;")->result();
+        }
+        if( $users == 0 )
+            $users = $q->limit(100,$page*100)->order_by("users.name, users.surname","asc")->get()->result();
 
         foreach( $users as $user )
         {
-            $user->plans = $this->db
-                ->select('id, diet')
-                ->from("plans")
-                ->where("status","A")
-                ->get()
-                ->result();
+            $user->plans = $this->db->query("SELECT `id`, `diet` FROM `plans` WHERE `user` = '".$user->id."' AND `status` = 'A'")->result();
         }
 
         return $users;

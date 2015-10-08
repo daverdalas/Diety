@@ -28,6 +28,17 @@ class Ordermodel extends CI_Model
             ->update('orders', array( 'status' => $status ) );
     }
 
+    function update_plan_status( $id, $status )
+    {
+        $this->db
+            ->where('id', $id)
+            ->update('plans', array( 'status' => $status ) );
+
+        $this->db
+            ->where( 'plan', $id )
+            ->delete( 'calendar' );
+    }
+
     function activate( $payment_id, $status = 'X' )
     {
         $this->db
@@ -372,7 +383,7 @@ class Ordermodel extends CI_Model
 
     private $dt = 0;
 
-    function calendar()
+    function calendar( $uid = 0 )
     {
         $now = new DateTime();
         $now->modify( $this->dt." day" );
@@ -380,27 +391,28 @@ class Ordermodel extends CI_Model
         $hour = $now->format('G');
 
 
-        $plans = $this->db
+        $q = $this->db
                 ->select(
                     "plans.*,".
                     "( plans.days_total - sum( date(calendar.day) < '".$now->format('Y-m-d')."' AND `calendar`.`day` is not null ) ) as 'days_future',"
                     )
                 ->from("plans")
                 ->join('calendar', 'plans.id = calendar.plan', 'left')
-                //->where( 'date(calendar.day) <', $deadline )
-                ->where( 'plans.status', 'A' )
-                //->or_where( 'calendar.day is null', null )
-                ->group_by("plans.id")->get()->result();
-        //        die( $this->db->last_query());
-        //echo '<pre>';
-        // print_r( $plans);exit;
+                ->where( 'plans.status', 'A' );
+
+        if( $uid ) $q = $q->where( "calendar.user", $uid );
+        $q = $q->group_by("plans.id");
+
+        $plans = $q->get()->result();
 
         $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
         $deadline = $now->format('Y-m-d');
 
-        $this->db
-            ->where( 'date(day) >=', $deadline )
-            ->delete( 'calendar' );
+        $q = $this->db
+            ->where( 'date(day) >=', $deadline );
+
+        if( $uid ) $q = $q->where( "user", $uid );
+        $q->delete( 'calendar' );
 
         $callendars = array();
         foreach( $plans as $plan ) {
@@ -417,11 +429,7 @@ class Ordermodel extends CI_Model
             $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
 
             $from = DateTime::createFromFormat('Y-m-d H:i:s', $plan->from );
-            //echo '<pre>'; print_r( $plan);
-            //echo( "<pre>".$dt." day<br>".$now->format('Y-m-d')."<br>".$from->format('Y-m-d'));
-
             $now = $from > $now ? $from : $now;
-            //echo '<pre>';
 
             $left = $plan->days_future;
             $now->modify("-1 day");
@@ -453,8 +461,6 @@ class Ordermodel extends CI_Model
                     $d['addy'] = $plan->addy;
                 }
 
-                //if( $plan->id == 6 ) print_r( $d );
-
                 array_push($callendars, $d);
                 $left--;
             }
@@ -485,7 +491,7 @@ class Ordermodel extends CI_Model
             ->from("calendar")
             ->where("user", $uid)
             ->where( 'date(calendar.day) >=', $now )
-            ->order_by("day", "asc")
+            ->_by("day", "asc")
             ->get()
             ->result();
 

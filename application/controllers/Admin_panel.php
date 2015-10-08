@@ -18,15 +18,35 @@ class Admin_panel extends T01_Controller {
         $this->show('panels/admin/index');
     }
 
-    public function users()
+    public function users( )
+    {
+        if( !$this->isLoggedIn ) redirect('/login', 'refresh');
+        if( !$this->isAdmin ) redirect('/', 'refresh');
+
+        $this->show( 'panels/admin/users' );
+    }
+
+    public function users_table( $page=0, $filter = null, $filter_value = null )
     {
         if( !$this->isLoggedIn ) redirect('/login', 'refresh');
         if( !$this->isAdmin ) redirect('/', 'refresh');
 
         $this->load->model('Usermodel');
+
         $users = $this->Usermodel->get_users(
+            $page,
+            $this->input->post('filter'),
+            $this->input->post('value')
         );
-        $this->show('panels/admin/users', array( 'users' => $users ) );
+        $this->show(
+            'panels/admin/users_table',
+            array(
+                'users' => $users,
+                'next' => count($users) == 100 ? $page+1 : -1,
+                'prev' => $page > 0 ? $page-1 : -1,
+                'page' => $page
+            )
+        );
     }
 
     function payment_status( $payment) {
@@ -84,10 +104,17 @@ class Admin_panel extends T01_Controller {
         );
     }
 
+    public function history()
+    {
+        $this->show( 'panels/admin/deliveries' );
+    }
+
     public function shedule( $date )
     {
         if( !$this->isLoggedIn ) redirect('/login', 'refresh');
         if( !$this->isAdmin ) redirect('/', 'refresh');
+
+        set_time_limit(0);
 
         $this->load->model('Ordermodel');
         $plans = $this->Ordermodel->shedule( $date );

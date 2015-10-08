@@ -114,6 +114,7 @@ class User_panel extends T01_Controller {
                 $orders = $this->Ordermodel->update(
                     $this->input->post()
                 );
+                $this->Ordermodel->calendar( $this->session->userdata['user']->id );
 
                 $this->load->library('email');
                 $this->email->from( $_SERVER['___MAIL_USER'], 'cooking.pl' );
