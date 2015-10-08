@@ -22,7 +22,7 @@ IntelliJ: http://www.jetbrains.com/idea/download/
 
 aplikację konfigurujemy na serwerze za pomocą pliku .htaccess:
 
-<code>
+```
 SetEnv ___MAIL_USER uzytkownik_smtp
 SetEnv ___MAIL_PASS haslo_smtp
 SetEnv ___MAIL_PORT port_smtp
@@ -30,19 +30,19 @@ SetEnv ___MAIL_HOST host_smtp
 
 SetEnv ___PAYU_POSID id_posa_pauy
 SetEnv ___PAYU_SIG klucz_payu
-</code>
+```
 
 ## testowa zawartość bazy
 
 testowe dane do bazy znajdują się w pliku test.sql
 
 UWAGA: niektóre identyfikatory w rekordach testowych ( np. id płatności payu ) są fikcyjne i moga powodować nieprawidłowe działanie aplikacji, s pełni sprawne konto należy założyć ręcznie lub skorzystać z danych:
-
+```
 user: slawek@t01.pl
 pass: 123456
-
+```
 ## widoki
-
+```
 /application/views/alert.php // plik techniczny
 
 /application/views/errors // szablony podstron błędów ( domyslne )
@@ -53,11 +53,11 @@ pass: 123456
 
 /application/views/user/panels/admin // szablon panelu administratora
 /application/views/user/panels/user // szablon panelu użytkownika
-
+```
 ## konfiguracja w widokach
 
 widok /application/views/user/panels/admin/diet.php zawiera konfigurację asortymentu sklepu w postaci dwóch tablic:
-
+```
 <?
     $periods = array(
         'TESTOWA' => 1,
@@ -75,9 +75,9 @@ widok /application/views/user/panels/admin/diet.php zawiera konfigurację asorty
         '2500',
     );
 ?>
-
+```
 ## adresy url aplikacji
-
+```
 /index.php/
 /index.php/login
 /index.php/register
@@ -100,7 +100,7 @@ widok /application/views/user/panels/admin/diet.php zawiera konfigurację asorty
 /index.php/order/invoice/[ID_FAKTURY]
 /index.php/order/process/[ID_ZAMOWIENIA]
 /index.php/user_panel/edit_user
-
+```
 ## integracja z payu
 
 notyfikacje z systemu payu powinny byc wysyłane zgodnie ze specyfikacją payu na url:
