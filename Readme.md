@@ -22,6 +22,7 @@ IntelliJ: http://www.jetbrains.com/idea/download/
 
 aplikację konfigurujemy na serwerze za pomocą pliku .htaccess:
 
+<code>
 SetEnv ___MAIL_USER uzytkownik_smtp
 SetEnv ___MAIL_PASS haslo_smtp
 SetEnv ___MAIL_PORT port_smtp
@@ -29,6 +30,7 @@ SetEnv ___MAIL_HOST host_smtp
 
 SetEnv ___PAYU_POSID id_posa_pauy
 SetEnv ___PAYU_SIG klucz_payu
+</code>
 
 ## testowa zawartość bazy
 
