@@ -205,7 +205,7 @@ class Order extends T01_Controller {
 
                         foreach( $orders as $order )
                         {
-                            $order = $this->Ordermodel->activate($order->orderId, $order->getStatus() );
+                            $order = $this->Ordermodel->activate( $order->orderId, $order->status );
                             $invoice = $this->Ordermodel->make_invoice($order->data->id, $order->user->id);
                             $order->data->invoice = $invoice;
                             $order->data->date = $now->format("Y-m-d");
@@ -315,7 +315,7 @@ class Order extends T01_Controller {
 
         $order = array();
         $order['notifyUrl'] = base_url().'index.php/order/notify';
-        //$order['notifyUrl'] = "https://t01.pl/payu/index.php";
+        $order['notifyUrl'] = "http://t01.pl/payu/index.php";
         $order['continueUrl'] = base_url().'index.php/user_panel/history';
         $order['customerIp'] = $this->input->ip_address();
         $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
