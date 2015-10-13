@@ -314,12 +314,14 @@ class Order extends T01_Controller {
         OpenPayU_Configuration::setSignatureKey( $this->config->item('SignatureKey', 'payu') );
 
         $order = array();
-        $order['notifyUrl'] = base_url().'order/notify';
-        $order['continueUrl'] = base_url().'user_panel/history';
-        $order['customerIp'] = $this->input->ip_address();
+        $order['notifyUrl'] = base_url().'index.php/order/notify';
+        //$order['notifyUrl'] = "https://t01.pl/payu/index.php";
+        $order['continueUrl'] = base_url().'index.php/user_panel/history';
+        $order['customerIp'] = '83.24.94.200'; //$this->input->ip_address();
         $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
         $order['description'] = $this->config->item('title', 'payu');
-//        $order['extOrderId'] = "think01-".time().'-'.$order_id;
+        $order['currencyCode'] = 'PLN';
+        //$order['extOrderId'] = "think01-".time().'-'.$order_id;
         $order['products'] = array();
 
         $cost = 0;
@@ -336,14 +338,14 @@ class Order extends T01_Controller {
             $cost += $v->price*$v->quantity;
         }
         $order['totalAmount'] = $cost;
-        $order['currencyCode'] = 'PLN';
+
 
         $order['buyer']['email'] = $v->email;
         $order['buyer']['phone'] = preg_replace( '/[^0-9\+]/','',$v->phone );
         $order['buyer']['firstName'] = $v->name;
         $order['buyer']['lastName'] = $v->surname;
 
-        try {
+        try {        //echo '<pre>'; print_r($order); die('');
             $response = OpenPayU_Order::create($order);
             $status_desc = OpenPayU_Util::statusDesc($response->getStatus());
             if($response->getStatus() == 'SUCCESS') {

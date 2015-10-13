@@ -36,6 +36,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             od <?=$calendars[$order->id][0]->from;?>:00
             do <?=$calendars[$order->id][0]->to;?>:00
         </li>
+        <li>ostatnia dostawa
+            <? $c = count($calendars[$order->id])-1; ?>
+            <?=$calendars[$order->id][$c]->day;?>
+            od <?=$calendars[$order->id][$c]->from;?>:00
+            do <?=$calendars[$order->id][$c]->to;?>:00
+        </li>
         <li><?=$order->name;?> <?=$order->surname;?></li>
         <li><?=$calendars[$order->id][0]->addy;?></li>
         <li><?=anchor('/user_panel/edit/'.$order->id, 'edytuj');?></li>

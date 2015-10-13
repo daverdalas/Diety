@@ -270,7 +270,7 @@ class Ordermodel extends CI_Model
                 ->get()
                 ->result();
         }
-        return count( $carts ) ? $carts : null;
+        return count( $carts ) ? $carts : array();
     }
 
     function update( $data )
