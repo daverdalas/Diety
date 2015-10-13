@@ -315,7 +315,7 @@ class Order extends T01_Controller {
 
         $order = array();
         $order['notifyUrl'] = base_url().'index.php/order/notify';
-        $order['notifyUrl'] = "http://t01.pl/payu/index.php";
+        //$order['notifyUrl'] = "http://t01.pl/payu/index.php";
         $order['continueUrl'] = base_url().'index.php/user_panel/history';
         $order['customerIp'] = $this->input->ip_address();
         $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
@@ -339,7 +339,6 @@ class Order extends T01_Controller {
         }
         $order['totalAmount'] = $cost;
 
-
         $order['buyer']['email'] = $v->email;
         $order['buyer']['phone'] = preg_replace( '/[^0-9\+]/','',$v->phone );
         $order['buyer']['firstName'] = $v->name;
@@ -356,10 +355,10 @@ class Order extends T01_Controller {
                 redirect($response->getResponse()->redirectUri, 'refresh');
             }
             else
-                $this->show( "alert", array( 'msg' => $response->getStatus().': '.$status_desc) );
+                $this->show( "alert", array( 'msg' => '<pre>'.print_r($order,true).'</pre><br>'.$response->getStatus().': '.$status_desc) );
             return;
         }catch (OpenPayU_Exception $e){
-            $this->show("alert", array( 'msg' => (string)$e ) );
+            $this->show("alert", array( 'msg' => '<pre>'.print_r($order,true).'</pre><br>'.(string)$e ) );
         }
     }
 

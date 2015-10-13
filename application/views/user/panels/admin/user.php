@@ -77,7 +77,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <h2>historia płatności</h2>
 <ul>
 <? foreach( $orders as $order ): ?>
+    <? if( $order->payment != null ): ?>
     <li><?=$order->timestamp;?> <?=$order->status;?> <?=anchor("/admin_panel/payment_status/".$order->payment, "szczegóły");?></li>
+    <? endif; ?>
 <? endforeach; ?>
 </ul>
 </body>

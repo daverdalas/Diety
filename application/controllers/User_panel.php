@@ -17,6 +17,7 @@ class User_panel extends T01_Controller {
         $this->load->model('Ordermodel');
         $plans = $this->Ordermodel->get_plan( $this->session->userdata['user']->id, array('A') );
         $calendars = $this->Ordermodel->get_callendar( $this->session->userdata['user']->id );
+        //$this->Ordermodel->calendar( $this->session->userdata['user']->id );
 
         $this->show('panels/user/index', array( 'orders' => $plans, 'calendars' => $calendars ));
     }

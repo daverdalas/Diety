@@ -61,6 +61,9 @@ class Ordermodel extends CI_Model
             ->update('plans', array( 'status' => 'A' ) );
 
         $order = $this->get_order( null, $d->id );
+
+        $this->calendar( $order[0]->data->user );
+
         $user = $this->db
             ->select('*')
             ->from("users")
@@ -387,7 +390,7 @@ class Ordermodel extends CI_Model
     {
         $now = new DateTime();
         $now->modify( $this->dt." day" );
-        echo $now->format('Y-m-d');
+        if( $uid == 0 ) echo $now->format('Y-m-d');
         $hour = $now->format('G');
 
 
@@ -400,11 +403,16 @@ class Ordermodel extends CI_Model
                 ->join('calendar', 'plans.id = calendar.plan', 'left')
                 ->where( 'plans.status', 'A' );
 
-        if( $uid ) $q = $q->where( "calendar.user", $uid );
+        if( $uid ) $q = $q->where( "plans.user", $uid );
         $q = $q->group_by("plans.id");
 
         $plans = $q->get()->result();
 
+        /*
+        echo '<pre>';
+        print_r( $plans );
+        exit;
+        */
         $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
         $deadline = $now->format('Y-m-d');
 

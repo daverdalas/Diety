@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $('.date-pick').datepicker({
                     dateFormat: 'yy-mm-dd',
                     onSelect: function(dateText, inst){
-                        window.location= "<?=base_url();?>/index.php/admin_panel/shedule/"+dateText;
+                        window.location= "<?=base_url();?>index.php/admin_panel/shedule/"+dateText;
                     },
                 });
             }
