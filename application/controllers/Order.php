@@ -317,7 +317,7 @@ class Order extends T01_Controller {
         $order['notifyUrl'] = base_url().'index.php/order/notify';
         //$order['notifyUrl'] = "https://t01.pl/payu/index.php";
         $order['continueUrl'] = base_url().'index.php/user_panel/history';
-        $order['customerIp'] = '83.24.94.200'; //$this->input->ip_address();
+        $order['customerIp'] = $this->input->ip_address();
         $order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
         $order['description'] = $this->config->item('title', 'payu');
         $order['currencyCode'] = 'PLN';
