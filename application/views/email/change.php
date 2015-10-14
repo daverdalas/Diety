@@ -10,4 +10,4 @@
 print_r( $plan );
 ?>
 </pre><br>
-click to edit: <?=anchor("/user_panel/edit/$plan->id");?>
+click to edit: <?=anchor("/user_panel/edit/".$plan['id']);?>

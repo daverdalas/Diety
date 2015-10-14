@@ -14,6 +14,7 @@ class Cronjob extends T01_Controller {
 
     function index()
     {
+        set_time_limit(0);
         $this->load->model('Ordermodel');
         $callendar = $this->Ordermodel->calendar( );
         $this->Debug( $callendar, true );

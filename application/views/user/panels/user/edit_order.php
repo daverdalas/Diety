@@ -211,7 +211,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class="date-pick"/></div>
 
 <?=form_submit("","kontynuuj");?>
-<?=anchor('/order/cart', 'cancel');?>
+<a href='#' onclick="window.history.back(); return false;">cancel</a>
 <?=form_close();?>
 
 </body>

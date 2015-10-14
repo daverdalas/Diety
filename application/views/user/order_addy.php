@@ -117,7 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <label><input type="text" name="comment" value="<?=set_value('comment' );?>"/>uwagi<?=form_error('comment');?></label>
 
 <?=form_submit("","kontynuuj");?>
-<?=anchor('/order/cart', 'cancel');?>
+<a href='#' onclick="window.history.back(); return false;">cancel</a>
 <?=form_close();?>
 </body>
 </html>
