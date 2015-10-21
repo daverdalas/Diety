@@ -107,7 +107,7 @@ class Order extends T01_Controller {
                 if( strlen($c->phone) > 9 )
                     $c->phone = "+".substr($c->phone, 0, 2).".".substr($c->phone, 2);
                 else
-                    $c->phone = "+48".substr($c->phone, 2);
+                    $c->phone = "+48.".$c->phone;
 
                 $c->addy = $this->input->post( 'addy' );
                 if( $this->input->post("cother") != null )

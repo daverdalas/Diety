@@ -283,7 +283,7 @@ class Ordermodel extends CI_Model
         if( strlen($data['phone']) > 9 )
             $data['phone'] = "+".substr($data['phone'], 0, 2).".".substr($data['phone'], 2);
         else
-            $data['phone'] = "+48".substr($data['phone'], 2);
+            $data['phone'] = "+48.".$data['phone'];
 
         $d = array(
             'name' => $data['name'],
@@ -485,7 +485,7 @@ class Ordermodel extends CI_Model
                 );
         }
 
-        $this->db->insert_batch( 'calendar', $callendars );
+        if( count($callendars) > 0 ) $this->db->insert_batch( 'calendar', $callendars );
     }
 
     function get_callendar( $uid )

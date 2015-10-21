@@ -52,6 +52,13 @@ class Usermodel extends CI_Model {
             ->where('id',$id )
             ->get()
             ->result();
+
+        /*
+        echo $id.'<br><pre>';
+        print_r( $h );
+        echo '</pre>';
+        //exit;
+        */
         return $h == null ? $h : $h[0];
     }
 
@@ -78,10 +85,12 @@ class Usermodel extends CI_Model {
         if( strlen($form['phone']) > 9 )
             $form['phone'] = "+".substr($form['phone'], 0, 2).".".substr($form['phone'], 2);
         else
-            $form['phone'] = "+48".substr($form['phone'], 2);
+            $form['phone'] = "+48.".$form['phone'];
 
         unset( $form['company'] );
+        //$form['id'] = $uid;
 
+        $this->db->where('id', $uid);
         $this->db->update('users', $form);
     }
 
@@ -112,7 +121,7 @@ class Usermodel extends CI_Model {
         if( strlen($form['phone']) > 9 )
             $form['phone'] = "+".substr($form['phone'], 0, 2).".".substr($form['phone'], 2);
         else
-            $form['phone'] = "+48".substr($form['phone'], 2);
+            $form['phone'] = "+48.".$form['phone'];
 
         unset( $form['company'] );
 
