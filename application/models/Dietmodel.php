@@ -111,6 +111,7 @@ class Dietmodel extends CI_Model
             if( !array_key_exists($v->name, $r ))
                 $r[$v->name] = array();
 
+            $v->price =sprintf( "%.2F", $v->price/100);
             $r[$v->name][$v->calories] = $v;
         }
         return array( 'name' => $key, 'diet' => $r );
@@ -138,7 +139,7 @@ class Dietmodel extends CI_Model
                         'diet' => $id,
                         'name' => $period,
                         'days' => $data['days'][$n],
-                        'price' => $data['price'][$n][$kcal]
+                        'price' => ceil($data['price'][$n][$kcal]*100)
                     )
                 );
             }
@@ -161,7 +162,7 @@ class Dietmodel extends CI_Model
                         ->update(
                             'diet_pricelist',
                             array(
-                                'price' => $data['price'][$n][$diet->calories]
+                                'price' => ceil($data['price'][$n][$diet->calories]*100)
                             )
                         );
             }

@@ -156,7 +156,7 @@ class Admin_panel extends T01_Controller {
             foreach( $prices as $k => $v )
             {
                 foreach( $v as $k1 => $v1 )
-                    $this->form_validation->set_rules("price[$k][$k1]", '', 'required|integer');
+                    $this->form_validation->set_rules("price[$k][$k1]", '', 'required|numeric|greater_than[1]');
             }
 
             if ($this->form_validation->run() == TRUE ) {
