@@ -119,9 +119,13 @@ class Dietmodel extends CI_Model
 
     function add( $new, $data )
     {
+        $d = $this->db
+            ->like("name", $data['name'] )
+            ->delete("diets");
+
         $ids = array();
-        if( $new )
-        {
+        //if( $new )
+        //{
             foreach( $data['price'][0] as $kcal => $price ) {
                 $this->db->insert(
                     'diets',
@@ -130,20 +134,23 @@ class Dietmodel extends CI_Model
                         'calories' => $kcal
                     )
                 );
+
                 $id = $this->db->insert_id();
 
                 foreach( $data['period'] as $n => $period )
-                $this->db->insert(
-                    'diet_pricelist',
-                    array(
-                        'diet' => $id,
-                        'name' => $period,
-                        'days' => $data['days'][$n],
-                        'price' => ceil($data['price'][$n][$kcal]*100)
-                    )
+                    if( $data['price'][$n][$kcal] > 0 )
+                    $this->db->insert(
+                        'diet_pricelist',
+                        array(
+                            'diet' => $id,
+                            'name' => $period,
+                            'days' => $data['days'][$n],
+                            'price' => ceil($data['price'][$n][$kcal]*100)
+                        )
                 );
             }
-        }
+        //}
+        /*
         else
         {
             $d = $this->db
@@ -167,8 +174,7 @@ class Dietmodel extends CI_Model
                         );
             }
         }
-
-
+        */
     }
 
     function all()
@@ -176,6 +182,7 @@ class Dietmodel extends CI_Model
         $diets = $this->db
             ->select('*')
             ->from("diets")
+            ->order_by("name, calories", "asc")
             ->get()
             ->result();
 
@@ -205,6 +212,21 @@ class Dietmodel extends CI_Model
 
             array_push($r['prices'][ $diet->diet ], $diet );
         }
+
+        foreach( $r['diets'] as $ak => $a )
+        {
+            foreach( $a as $k => $d )
+            {
+                if( !array_key_exists( $d->id, $r['prices'] ) )
+                    unset( $r['diets'][$ak][$k] );
+                else $r['diets'][$ak][$k] = $d;
+            }
+
+            if( count( $r['diets'][$ak] ) == 0 ) unset( $r['diets'][$ak] );
+        }
+
+        //echo '<pre>'; print_r($r);exit;
+
         return $r;
     }
 }
