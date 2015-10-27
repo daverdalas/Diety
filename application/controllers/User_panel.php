@@ -115,7 +115,9 @@ class User_panel extends T01_Controller {
                 $orders = $this->Ordermodel->update(
                     $this->input->post()
                 );
-                $this->Ordermodel->calendar( $this->session->userdata['user']->id );
+
+                $puid = $this->Ordermodel->getPlanOwner( $this->input->post('id') );
+                if( $puid > 0 ) $this->Ordermodel->calendar( $puid );
 
                 $this->load->library('email');
                 $this->email->from( $_SERVER['___MAIL_USER'], 'cooking.pl' );

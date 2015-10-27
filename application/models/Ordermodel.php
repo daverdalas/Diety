@@ -304,16 +304,16 @@ class Ordermodel extends CI_Model
             ->where_in('status', array( 'W', 'A' ) )
             ->update('plans', $d );
 
+        $rr = $this->db
+            ->select('id')
+            ->from("plans")
+            ->where('id', $data['id'] )
+            ->where_in('status', array( 'W', 'A' ) )
+            ->get()
+            ->result();
+
         if(
-            count(
-                $this->db
-                    ->select('id')
-                    ->from("plans")
-                    ->where('id', $data['id'] )
-                    ->where_in('status', array( 'W', 'A' ) )
-                    ->get()
-                    ->result()
-            ) ==0
+            count($rr) ==0
         ) return;
 
 
@@ -322,6 +322,7 @@ class Ordermodel extends CI_Model
         $now = new DateTime();
         $rows = array();
         if( !array_key_exists('banned', $data) ) $data['banned'] = array();
+
         foreach( $data['banned'] as $date )
         {
             $date = DateTime::createFromFormat('Y-m-d', $date );
@@ -348,6 +349,18 @@ class Ordermodel extends CI_Model
                     ->get()
                     ->result()
                 ) > 0;
+    }
+
+    function getPlanOwner( $plan_id )
+    {
+        $r = $this->db
+                ->select('user')
+                ->from("plans")
+                ->where( "id", $plan_id )
+                ->get()
+                ->result();
+
+        return $r == null ? 0 : $r[0]->user;
     }
 
     function checkOrderOwner( $order_id, $uid )
@@ -433,10 +446,11 @@ class Ordermodel extends CI_Model
                 ->result();
 
             $now = new DateTime();
+            $now->setTime( 0,0 );
             $now->modify( $this->dt." day" );
             $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
 
-            $from = DateTime::createFromFormat('Y-m-d H:i:s', $plan->from );
+            $from = DateTime::createFromFormat('Y-m-d 00:00:00', $plan->from );
             $now = $from > $now ? $from : $now;
 
             $left = $plan->days_future;
@@ -468,7 +482,6 @@ class Ordermodel extends CI_Model
                     $d['to'] = $plan->time_to;
                     $d['addy'] = $plan->addy;
                 }
-
                 array_push($callendars, $d);
                 $left--;
             }
@@ -484,7 +497,6 @@ class Ordermodel extends CI_Model
                     )
                 );
         }
-
         if( count($callendars) > 0 ) $this->db->insert_batch( 'calendar', $callendars );
     }
 
