@@ -112,6 +112,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             time: "<?=set_value('id',null );?>"
         };
 
+        function toggleWeekend()
+        {
+            if( $('#weekends').is(':checked') )
+            {
+                checkWeekend = weekendOn;
+            }
+            else
+            {
+                checkWeekend = weekendOff;
+            }
+            $('.date-pick').datepicker( "refresh" );
+        }
+
+        var checkWeekend = function(){};
+
+        function weekendOff(date)
+        {
+            return date.getDay() == 6 || date.getDay() == 0;
+        }
+
+        function weekendOn(date)
+        {
+            return false;
+        }
+
+        var serverDate = new Date(<?=time();?>*1000);
+        var deadline = new Date(serverDate);
+        deadline.setDate(serverDate.getDate()+( serverDate.getHours() >= 14 ? 2 : 1 ));
+        deadline.setHours(0);
+        deadline.setMinutes(0);
+        deadline.setSeconds(0);
+
         $(document).ready(
             function(){
                 $('#diet').html('');
@@ -123,7 +155,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 if( defaults.diet != "" ) $('#diet').val(defaults.diet);
                 load_diet();
                 var dateToday = new Date();
-                $( "#date" ).datepicker({ dateFormat: 'yy-mm-dd', minDate: dateToday });
+                $( "#date" ).datepicker({
+                    beforeShowDay: $.datepicker.noWeekends,
+                    dateFormat: 'yy-mm-dd',
+                    beforeShowDay: function(date){
+                        if( checkWeekend(date) ) return [false, ""];
+                        if( date<deadline ) return [false, ""];
+                        return [true, ""];
+                    }
+
+                });
             } );
     </script>
 </head>
@@ -156,12 +197,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </label>
 
 <label>
-    <input type="text" name="date" id="date" value="<?=set_value('date', ( new DateTime() )->format("Y-m-d") );?>"/>
+    <?
+        $now = new DateTime();
+        $hour = $now->format('G');
+        $now->setTime( 0,0 );
+        $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
+        $deadline = $now->format("Y-m-d")
+    ?>
+    <input type="text" name="date" id="date" value="<?=set_value('date', $deadline );?>"/>
     data rozpoczęcia<?=form_error('date');?>
 </label>
 
 <label>
-    <input type="checkbox" name="weekends" <?=set_checkbox('weekends', 'on', true);?> />
+    <input type="checkbox" name="weekends" id="weekends" <?=set_checkbox('weekends', 'on', true);?> onchange="toggleWeekend()"/>
     dieta z weekendami
 </label>
 
