@@ -30,6 +30,8 @@ class Usermodel extends CI_Model {
             ->where('id', $uid)
             ->like( 'token', $token )
             ->update('users', array( 'status' => 'X' ) );
+
+        return $this->db->affected_rows();
     }
 
     function get_user( $d )

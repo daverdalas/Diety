@@ -183,7 +183,7 @@ class Ordermodel extends CI_Model
         if( $order_id != null ) $query = $query->where( "id", $order_id );
         $orders =  $query->get()->result();
 
-        if( $orders == null ) return null;
+        if( $orders == null ) return array();
 
         if( $carts != true ) return $orders;
 
@@ -222,7 +222,7 @@ class Ordermodel extends CI_Model
             array_unshift( $ret, $r );
         }
 
-        return count( $ret ) ? $ret : null;
+        return count( $ret ) ? $ret : array();
     }
 
     function get_invoice( $id )
