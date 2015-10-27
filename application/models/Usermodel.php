@@ -155,6 +155,7 @@ class Usermodel extends CI_Model {
             $q = $q
                 ->join("plans","plans.user=users.id","left")
                 ->like('plans.diet', $filter_value )
+                ->where( 'plans.status', 'A' )
                 ->group_by("users.id");
         }
         if( $filter == 'delivery' )

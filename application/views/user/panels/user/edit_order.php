@@ -99,6 +99,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var serverDate = new Date(<?=time();?>*1000);
         var deadline = new Date(serverDate);
         deadline.setDate(serverDate.getDate()+( serverDate.getHours() >= 14 ? 2 : 1 ));
+        deadline.setHours(0);
+        deadline.setMinutes(0);
+        deadline.setSeconds(0);
 
         $(document).ready(
             function()

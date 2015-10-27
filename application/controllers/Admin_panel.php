@@ -91,7 +91,7 @@ class Admin_panel extends T01_Controller {
         }
 
         $calendars = $this->Ordermodel->get_callendar( $uid );
-        $orders = $this->Ordermodel->get_order( null, null, null, false );
+        $orders = $this->Ordermodel->get_order( $uid, null, null, false );
 
         $this->show(
             'panels/admin/user',
