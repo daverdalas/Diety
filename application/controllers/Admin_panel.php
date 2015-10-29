@@ -60,7 +60,8 @@ class Admin_panel extends T01_Controller {
         OpenPayU_Configuration::setSignatureKey( $this->config->item('SignatureKey', 'payu') );
 
         $order = OpenPayU_Order::retrieve($payment)->getResponse()->orders;
-        $this->Debug( $order, true );
+        /*$this->Debug( $order, true );*/
+		$this->show('user/panels/admin/payment_status', array('order'=>$order));
     }
 
 
@@ -128,7 +129,9 @@ class Admin_panel extends T01_Controller {
             $html2pdf->WriteHTML($msg);
             $html2pdf->Output("$date.pdf", 'D');
         }
-        die( 'brak dostaw na '.$date );
+        else {
+            return $this->load->view('user/panels/admin/no_deliveries');
+          }
     }
 
     public function diets( $step = 0 )
