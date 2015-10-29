@@ -153,7 +153,7 @@ class User_panel extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) > 11 || strlen($str) < 9 )
         {
-            $this->form_validation->set_message('phone_check', '%s is not a valid phone');
+            $this->form_validation->set_message('phone_check', '%s posiada nieprawidłowy format');
             return FALSE;
         }
         else
@@ -167,7 +167,7 @@ class User_panel extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', '%s is not a valid nip');
+            $this->form_validation->set_message('nip_check', '%s posiada nieprawidłowy format');
             return FALSE;
         }
         else
