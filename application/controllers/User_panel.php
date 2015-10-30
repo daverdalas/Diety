@@ -73,6 +73,7 @@ class User_panel extends T01_Controller {
             if ($this->form_validation->run() == TRUE )
             {
                 $this->Usermodel->update( $uid, $this->input->post() );
+                $this->session->set_userdata('user', $this->Usermodel->fetch_user( $uid ) );
                 redirect('/user_panel', 'refresh');
             }
         }
