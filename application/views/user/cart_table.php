@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <th>cena</th>
         <th>usuń</th>
     </tr>
-    <? foreach( $cart as $order ): ?>
+    <?php foreach( $cart as $order ): ?>
     <tr>
         <td><?=$order->label;?></td>
         <td>
@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <td><?=$order->cost;?></td>
         <td><a href="javascript:remove(<?=$order->id;?>)">usuń</a></td>
     </tr>
-    <? endforeach; ?>
+    <?php endforeach; ?>
     <tr>
         <th><h3>podsumowanie</h3></th>
         <td colspan = "5" class = "text-right"><h3><?=$cost;?> PLN</h3></td>

@@ -37,24 +37,24 @@
 		<th style = "text-align:left;">godziny dostawy:</th>
 		<td style = "padding-left: 2em;">od <?php echo $plan['from'] ?> do <?php echo $plan['to'] ?></td>
 	</tr>
-	<? if(array_key_exists('banned', $plan)): ?>
+	<?php if(array_key_exists('banned', $plan)): ?>
 		<th style = "text-align:left;">Pomiń dni:</th>
 		<td style = "padding-left: 2em;">
-		<? foreach( $plan['banned'] as $banned ): ?>
+		<?php foreach( $plan['banned'] as $banned ): ?>
 				<span><?php echo $banned ?>,</span>
-			<? endforeach ?>
+			<?php endforeach ?>
 		</td>
-	<? endif; ?>
-	<? if(array_key_exists('addy2', $plan)): ?>
+	<?php endif; ?>
+	<?php if(array_key_exists('addy2', $plan)): ?>
 	<tr>
 		<th style = "text-align:left;">Adres weekendowy:</th>
 		<td style = "padding-left: 2em;"><?php echo $plan['addy2'] ?></td>
 	</tr>
-	<? endif; ?>
-	<? if(array_key_exists('from2', $plan)): ?>
+	<?php endif; ?>
+	<?php if(array_key_exists('from2', $plan)): ?>
 		<th style = "text-align:left;">Godziny dostawy w weekend:</th>
 		<td style = "padding-left: 2em;">od <?php echo $plan['from2'] ?> do <?php echo $plan['to2'] ?></td>
-	<? endif; ?>
+	<?php endif; ?>
 </table>
 <p>By edytować zamówienie kliknij e link: <?=anchor("/user_panel/edit/".$plan['id']);?></p>
 </div>

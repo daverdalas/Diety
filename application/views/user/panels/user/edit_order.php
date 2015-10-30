@@ -121,10 +121,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     }
                 });
 
-                <? foreach( $order->banned as $d ): ?>
+                <?php foreach( $order->banned as $d ): ?>
                 var d = new Date('<?=$d->timestamp;?>');
                 dates.push( $.datepicker.formatDate($('.date-pick').datepicker('option', 'dateFormat'), d) );
-                <? endforeach; ?>
+                <?php endforeach; ?>
 
                 $('#banned_days').html('');
                 for( var i in dates )

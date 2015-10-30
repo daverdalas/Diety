@@ -84,7 +84,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </td>
                             <?php  endforeach; ?>
                         </tr>
-                        <? $p++; ?>
+                        <?php $p++; ?>
                     <?php $p++; endforeach; ?>
                 </table>
                 <div class = "col-md-12 text-center">
