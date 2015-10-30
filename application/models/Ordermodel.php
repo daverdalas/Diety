@@ -181,7 +181,7 @@ class Ordermodel extends CI_Model
 
         if( $user_id != null ) $query = $query->where( "user", $user_id );
         if( $order_id != null ) $query = $query->where( "id", $order_id );
-        $orders =  $query->get()->result();
+        $orders =  $query->order_by("timestamp", "desc")->get()->result();
 
         if( $orders == null ) return array();
 
