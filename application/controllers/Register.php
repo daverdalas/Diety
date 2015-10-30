@@ -23,7 +23,7 @@ class Register extends T01_Controller {
             if( $this->input->post("company") != null )
             {
                 $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
-                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[3]');
+                $this->form_validation->set_rules('fvat', 'adres firmy', 'required|min_length[3]');
             }
 
             if ($this->form_validation->run() == TRUE )
@@ -51,7 +51,7 @@ class Register extends T01_Controller {
 
         if ( $this->Usermodel->get_hash( $str ) != null )
         {
-            $this->form_validation->set_message('username_check', 'form_validation_t01_exists');
+            $this->form_validation->set_message('username_check', 'podana nazwa użytkownika już istnieje');
             return FALSE;
         }
         else
@@ -65,7 +65,7 @@ class Register extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) > 11 || strlen($str) < 9 )
         {
-            $this->form_validation->set_message('phone_check', '%s is not a valid phone');
+            $this->form_validation->set_message('phone_check', '%s ma nieprawidłowy format');
             return FALSE;
         }
         else
@@ -79,7 +79,7 @@ class Register extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', '%s is not a valid nip');
+            $this->form_validation->set_message('nip_check', '%s ma nieprawidłowy format');
             return FALSE;
         }
         else

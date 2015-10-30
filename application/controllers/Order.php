@@ -76,7 +76,7 @@ class Order extends T01_Controller {
             {
                 $this->form_validation->set_rules('company', 'nazwa firmy', 'required|min_length[2]|max_length[255]');
                 $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
-                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[3]');
+                $this->form_validation->set_rules('fvat', 'adres firmy', 'required|min_length[3]');
             }
 
             if( $this->input->post("cother") != null )
