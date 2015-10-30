@@ -26,6 +26,7 @@ class Dietmodel extends CI_Model
 
     function cart( $cart )
     {
+        if( !is_array( $cart ) ) return array();
         $r = array();
         $p = 0;
         foreach( $cart as $id => $order )
