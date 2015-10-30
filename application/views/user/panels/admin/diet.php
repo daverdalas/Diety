@@ -30,12 +30,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             '3 TYGODNIE' => 21,
             '4 TYGODNIE' => 28,
         );
-        $energy = array(
+   /*     $energy = array(
             '1000',
             '1300',
             '1700',
             '2000',
-        );
+        );*/
     ?>
 </head>
 <body class = "body-app">
@@ -55,13 +55,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <table class = "table table-bordered text-uppercase">
                     <tr>
                         <td></td>
-                        <?php foreach ( $energy as $kcal ): ?>
+                        <?php foreach ( $energy as $id=>$kcal ): ?>
                         <td>
-                            <b><?=$kcal;?> KCAL</b>
+                            <b><input type="text" name="energy[<?= $id; ?>]" value="<?=$kcal;?>"> KCAL</b>
                         </td>
                         <?php endforeach; ?>
                     </tr>
                     <?php $p = 0; ?>
+                   
                     <?php foreach ($periods as $period => $days ): ?>
                         <input type="hidden" name="period[<?=$p;?>]" value="<?=$period;?>"/>
                         <input type="hidden" name="days[<?=$p;?>]" value="<?=$days;?>"/>
@@ -79,12 +80,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         else
                                             $price = 0;
                                     ?>
-                                    <input <?php if( form_error("price[$p][$kcal]") ) echo 'class="error"';?> type="text" name="price[<?=$p;?>][<?=$kcal;?>]" value="<?=set_value("price[$p][$kcal]",$price);?>"/>
+                                    <input <?php if( form_error("price[$p][$kcal]") ) echo 'class="error"';?> type="text" name="price[<?=$p;?>][]" value="<?=set_value("price[$p][$kcal]",$price);?>"/>
                                 </td>
-                            <?php endforeach; ?>
+                            <?php  endforeach; ?>
                         </tr>
                         <? $p++; ?>
-                    <?php endforeach; ?>
+                    <?php $p++; endforeach; ?>
                 </table>
                 <div class = "col-md-12 text-center">
                     <div class = "btn-back fluid-container margin-top-50 centered">
@@ -98,7 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class = "col-sm-12 no-padding text-uppercase text-left about-user">
                     <div class = "col-xs-12 col-sm-6 border-top border-bottom no-padding about-user-label">Panel administracyjny</div>
-                        <?=anchor('/admin_panel', 'wróć', 'class = "btn-account col-xs-12 col-sm-6 text-uppercase text-left"');?>
+                        <?=anchor('/admin_panel/diets', 'wróć', 'class = "btn-account col-xs-12 col-sm-6 text-uppercase text-left"');?>
                 </div>
                 <div class = "btn-back fluid-container margin-top-50 centered">
                         <?=anchor('/login/out', 'wyloguj', 'class = "btn btn-lg btn-show text-uppercase"');?>
