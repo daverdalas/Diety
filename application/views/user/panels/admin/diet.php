@@ -60,7 +60,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <label>
     <input type="text" name="name" value="<?=set_value('name', isset($name) ? $name : "");?>" <?=( isset($name) ? 'readonly' : '' );?>/>
-    nazwa diety<?=form_error('name');?>
+    <?=lang('diet_name');?><?=form_error('name');?>
 </label>
 
 <table>

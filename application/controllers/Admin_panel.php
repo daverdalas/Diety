@@ -153,8 +153,8 @@ class Admin_panel extends T01_Controller {
         if( count($this->input->post()) > 0 ) {
             $this->load->library('form_validation');
 
-            if( $id == 0 ) $this->form_validation->set_rules('name', 'nazwa diety', 'required|min_length[3]|max_length[255]|callback_diet_check');
-            else $this->form_validation->set_rules('name', 'nazwa diety', 'required|min_length[3]|max_length[255]');
+            if( $id == 0 ) $this->form_validation->set_rules('name', lang('diet_name'), 'required|min_length[3]|max_length[255]|callback_diet_check');
+            else $this->form_validation->set_rules('name', lang('diet_name'), 'required|min_length[3]|max_length[255]');
 
             $prices = $this->input->post('price');
             foreach( $prices as $k => $v )
@@ -181,7 +181,7 @@ class Admin_panel extends T01_Controller {
         $d = $this->Dietmodel->all()['diets'];
         if ( array_key_exists($str,$d) )
         {
-            $this->form_validation->set_message('diet_check', 'form_validation_t01_exists');
+            $this->form_validation->set_message('diet_check', lang('form_validation_t01_exists'));
             return FALSE;
         }
         else

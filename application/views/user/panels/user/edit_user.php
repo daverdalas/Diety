@@ -54,15 +54,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
 <?=form_open();?>
 
-    <label><input type="text" name="name" value="<?=set_value('name', $user->name);?>"/>imie<?=form_error('name');?></label>
-    <label><input type="text" name="surname" value="<?=set_value('surname', $user->surname);?>"/>nazwisko<?=form_error('surname');?></label>
-    <label><input type="text" name="phone" value="<?=set_value('phone', $user->phone);?>"/>telefon<?=form_error('phone');?></label>
-    <label><input type="text" name="addy" value="<?=set_value('addy', $user->addy);?>"/>adres dostawy<?=form_error('addy');?></label>
+    <label><input type="text" name="name" value="<?=set_value('name', $user->name);?>"/><?=lang('imie');?><?=form_error('name');?></label>
+    <label><input type="text" name="surname" value="<?=set_value('surname', $user->surname);?>"/><?=lang('nazwisko');?><?=form_error('surname');?></label>
+    <label><input type="text" name="phone" value="<?=set_value('phone', $user->phone);?>"/><?=lang('telefon');?><?=form_error('phone');?></label>
+    <label><input type="text" name="addy" value="<?=set_value('addy', $user->addy);?>"/><?=lang('adres_dostawy');?><?=form_error('addy');?></label>
 
-    <label><input type="checkbox" id="company" name="company" onchange="toggleCompany()" <?=set_checkbox('company', 'on', $user->nip != null);?>/>firma</label>
+    <label><input type="checkbox" id="company" name="company" onchange="toggleCompany()" <?=set_checkbox('company', 'on', $user->nip != null);?>/><?=lang('firma');?></label>
 
-    <label class="nip"><input type="text" name="nip" value="<?=set_value('nip', $user->nip);?>"/>nip<?=form_error('nip');?></label>
-    <label class="nip"><input type="text" name="fvat" value="<?=set_value('fvat', $user->fvat);?>"/>adres fvat<?=form_error('fvat');?></label>
+    <label class="nip"><input type="text" name="nip" value="<?=set_value('nip', $user->nip);?>"/><?=lang('nip');?><?=form_error('nip');?></label>
+    <label class="nip"><input type="text" name="fvat" value="<?=set_value('fvat', $user->fvat);?>"/><?=lang('adres_fvat');?><?=form_error('fvat');?></label>
 
 <?=form_submit("","Zapisz");?>
 <?=anchor('/user_panel', 'cancel');?>

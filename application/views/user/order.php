@@ -193,7 +193,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <label>
     <input type="number" id="number" name="number" min="1" onchange="set_num();" value="<?=set_value('number',1 );?>"/>
     <input type="hidden" id="id" name="id" value="<?=set_value('id' );?>"/>
-    liczba zestawów<?=form_error('number');?>
+    <?=lang('number');?><?=form_error('number');?>
 </label>
 
 <label>
@@ -205,12 +205,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $deadline = $now->format("Y-m-d")
     ?>
     <input type="text" name="date" id="date" value="<?=set_value('date', $deadline );?>"/>
-    data rozpoczęcia<?=form_error('date');?>
+    <?=lang('date');?><?=form_error('date');?>
 </label>
 
 <label>
     <input type="checkbox" name="weekends" id="weekends" <?=set_checkbox('weekends', 'on', true);?> onchange="toggleWeekend()"/>
-    dieta z weekendami
+    <?=lang('dieta_z_weekendami');?>
 </label>
 
 <h3 id="price"></h3>

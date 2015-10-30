@@ -38,18 +38,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
     <?=form_open();?>
 
-    <label><input type="text" name="email" value="<?=set_value('email');?>"/>email<?=form_error('email');?></label>
-    <label><input type="password" name="pass1" value="<?=set_value('pass1');?>"/>hasło<?=form_error('pass1');?></label>
-    <label><input type="password" name="pass2" value="<?=set_value('pass1');?>"/>powt. hasło<?=form_error('pass1');?></label>
-    <label><input type="text" name="name" value="<?=set_value('name');?>"/>imie<?=form_error('name');?></label>
-    <label><input type="text" name="surname" value="<?=set_value('surname');?>"/>nazwisko<?=form_error('surname');?></label>
-    <label><input type="text" name="phone" value="<?=set_value('phone');?>"/>telefon<?=form_error('phone');?></label>
-    <label><input type="text" name="addy" value="<?=set_value('addy');?>"/>adres dostawy<?=form_error('addy');?></label>
+    <label><input type="text" name="email" value="<?=set_value('email');?>"/><?=lang('email');?><?=form_error('email');?></label>
+    <label><input type="password" name="pass1" value="<?=set_value('pass1');?>"/><?=lang('haslo');?><?=form_error('pass1');?></label>
+    <label><input type="password" name="pass2" value="<?=set_value('pass1');?>"/><?=lang('re_haslo');?><?=form_error('pass1');?></label>
+    <label><input type="text" name="name" value="<?=set_value('name');?>"/><?=lang('imie');?><?=form_error('name');?></label>
+    <label><input type="text" name="surname" value="<?=set_value('surname');?>"/><?=lang('nazwisko');?><?=form_error('surname');?></label>
+    <label><input type="text" name="phone" value="<?=set_value('phone');?>"/><?=lang('telefon');?><?=form_error('phone');?></label>
+    <label><input type="text" name="addy" value="<?=set_value('addy');?>"/><?=lang('adres_dostawy');?><?=form_error('addy');?></label>
 
-    <label><input type="checkbox" id="company" name="company" onchange="$('#company').is(':checked') ? $('.nip').show() : $('.nip').hide();";/>firma</label>
+    <label><input type="checkbox" id="company" name="company" onchange="$('#company').is(':checked') ? $('.nip').show() : $('.nip').hide();";/><?=lang('firma');?></label>
 
-    <label class="nip"><input type="text" name="nip"/>nip<?=form_error('nip');?></label>
-    <label class="nip"><input type="text" name="fvat"/>adres fvat<?=form_error('fvat');?></label>
+    <label class="nip"><input type="text" name="nip"/><?=lang('nip');?><?=form_error('nip');?></label>
+    <label class="nip"><input type="text" name="fvat"/><?=lang('adres_firmy');?><?=form_error('fvat');?></label>
 
     <?=form_submit("","Zarejestruj");?>
     <?=anchor('/', 'cancel');?>

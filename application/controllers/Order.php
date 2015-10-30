@@ -20,9 +20,9 @@ class Order extends T01_Controller {
         {
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('number', 'number', 'required|integer|numeric|greater_than[0]');
-            $this->form_validation->set_rules('date', 'date', 'required|callback_date_check');
-            $this->form_validation->set_rules('id', 'id', 'callback_id_check');
+            $this->form_validation->set_rules('number', lang('number'), 'required|integer|numeric|greater_than[0]');
+            $this->form_validation->set_rules('date', lang('date'), 'required|callback_date_check');
+            $this->form_validation->set_rules('id', lang('id'), 'callback_id_check');
 
             if ($this->form_validation->run() == TRUE ) {
                 $cart = $this->session->userdata('cart');
@@ -63,34 +63,34 @@ class Order extends T01_Controller {
         {
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('zgoda1', 'zgoda1', 'required');
-            $this->form_validation->set_rules('zgoda2', 'zgoda2', 'required');
+            $this->form_validation->set_rules('zgoda1', lang('zgoda1'), 'required');
+            $this->form_validation->set_rules('zgoda2', lang('zgoda2'), 'required');
 
-            $this->form_validation->set_rules('email', 'email', 'required|max_length[255]|valid_email');
-            $this->form_validation->set_rules('name', 'imię', 'required|min_length[2]|max_length[255]');
-            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[2]|max_length[255]');
-            $this->form_validation->set_rules('phone', 'telefon', 'required|min_length[9]|max_length[255]|callback_phone_check');
-            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[3]');
+            $this->form_validation->set_rules('email', lang('email'), 'required|max_length[255]|valid_email');
+            $this->form_validation->set_rules('name', lang('imie'), 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('surname', lang('nazwisko'), 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('phone', lang('telefon'), 'required|min_length[9]|max_length[255]|callback_phone_check');
+            $this->form_validation->set_rules('addy', lang('adres_dostawy'), 'required|min_length[3]');
 
             if( $this->input->post("cnip") != null )
             {
-                $this->form_validation->set_rules('company', 'nazwa firmy', 'required|min_length[2]|max_length[255]');
-                $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
-                $this->form_validation->set_rules('fvat', 'adres firmy', 'required|min_length[3]');
+                $this->form_validation->set_rules('company', lang('firma'), 'required|min_length[2]|max_length[255]');
+                $this->form_validation->set_rules('nip', lang('nip'), 'required|min_length[10]|max_length[255]|callback_nip_check');
+                $this->form_validation->set_rules('fvat', lang('adres_firmy'), 'required|min_length[3]');
             }
 
             if( $this->input->post("cother") != null )
             {
-                $this->form_validation->set_rules('addy2', 'adres dostawy', 'required|min_length[3]');
+                $this->form_validation->set_rules('addy2', lang('adres_dostawy'), 'required|min_length[3]');
             }
 
-            $this->form_validation->set_rules('from', 'od', 'required|integer|numeric|greater_than[5]|less_than[11]');
-            $this->form_validation->set_rules('to', 'do', 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
+            $this->form_validation->set_rules('from', lang('od'), 'required|integer|numeric|greater_than[5]|less_than[11]');
+            $this->form_validation->set_rules('to', lang('do'), 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
 
             if( $this->input->post("cotherh") != null )
             {
-                $this->form_validation->set_rules('from1', 'od', 'required|integer|numeric|greater_than[5]|less_than[11]');
-                $this->form_validation->set_rules('to1', 'do', 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
+                $this->form_validation->set_rules('from1', lang('od'), 'required|integer|numeric|greater_than[5]|less_than[11]');
+                $this->form_validation->set_rules('to1', lang('do'), 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
             }
 
 
@@ -378,7 +378,7 @@ class Order extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) > 11 || strlen($str) < 9 )
         {
-            $this->form_validation->set_message('phone_check', 'form_validation_t01_phone');
+            $this->form_validation->set_message('phone_check', lang('form_validation_t01_phone'));
             return FALSE;
         }
         else
@@ -392,7 +392,7 @@ class Order extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', 'form_validation_t01_nip');
+            $this->form_validation->set_message('nip_check', lang('form_validation_t01_nip'));
             return FALSE;
         }
         else
@@ -441,7 +441,7 @@ class Order extends T01_Controller {
 
         if ( $date < $now )
         {
-            $this->form_validation->set_message('date_check', 'form_validation_t01_date' );
+            $this->form_validation->set_message('date_check', lang('form_validation_t01_date') );
             return FALSE;
         }
         else
@@ -456,7 +456,7 @@ class Order extends T01_Controller {
 
         if ( $this->Dietmodel->check( $id ) == null )
         {
-            $this->form_validation->set_message('id_check', 'form_validation_t01_diet' );
+            $this->form_validation->set_message('id_check', lang('form_validation_t01_diet') );
             return FALSE;
         }
         else

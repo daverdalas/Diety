@@ -182,32 +182,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <input type="hidden" name="id" value="<?=$order->id;?>"/>
 
-<label><input type="text" name="name" value="<?=set_value('name',$order->name);?>"/>imie<?=form_error('name');?></label>
-<label><input type="text" name="surname" value="<?=set_value('surname',$order->surname);?>"/>nazwisko<?=form_error('surname');?></label>
-<label><input type="text" name="phone" value="<?=set_value('phone',$order->phone);?>"/>telefon<?=form_error('phone');?></label>
-<label><input type="text" name="email" value="<?=set_value('email',$order->email);?>"/>email<?=form_error('email');?></label>
+<label><input type="text" name="name" value="<?=set_value('name',$order->name);?>"/><?=lang('imie');?><?=form_error('name');?></label>
+<label><input type="text" name="surname" value="<?=set_value('surname',$order->surname);?>"/><?=lang('nazwisko');?><?=form_error('surname');?></label>
+<label><input type="text" name="phone" value="<?=set_value('phone',$order->phone);?>"/><?=lang('telefon');?><?=form_error('phone');?></label>
+<label><input type="text" name="email" value="<?=set_value('email',$order->email);?>"/><?=lang('email');?><?=form_error('email');?></label>
 
-<label><input type="text" name="addy" value="<?=set_value('addy',$order->addy);?>"/>adres dostawy<?=form_error('addy');?></label>
+<label><input type="text" name="addy" value="<?=set_value('addy',$order->addy);?>"/><?=lang('adres_dostawy');?><?=form_error('addy');?></label>
 <label>
     <div>
-        Od: <select id="from" name="from" onchange="reindex_to()"></select>
-        Do: <select id="to" name="to"></select>
+        <?=lang('od');?>: <select id="from" name="from" onchange="reindex_to()"></select>
+        <?=lang('do');?>: <select id="to" name="to"></select>
     </div>
-    godziny dostawy <?=form_error('from');?> <?=form_error('to');?>
+    <?=lang('godziny_dostawy');?> <?=form_error('from');?> <?=form_error('to');?>
 </label>
 
 <label>
     <input type="checkbox" name="weekends" id="weekends" <?=set_checkbox('weekends', 'on', $order->weekend == 1);?> onchange="toggleWeekend()"/>
-    dieta z weekendami
+    <?=lang('dieta_z_weekendami');?>
 </label>
 
-<label class="weekends"><input type="text" name="addy2" value="<?=set_value('addy2', $order->addy_w );?>"/>adres<?=form_error('addy2');?></label>
+<label class="weekends"><input type="text" name="addy2" value="<?=set_value('addy2', $order->addy_w );?>"/><?=lang('adres_dostawy');?><?=form_error('addy2');?></label>
 <label class="weekends">
     <div>
-        Od: <select id="from1" name="from1" onchange="reindex_to()"></select>
-        Do: <select id="to1" name="to1"></select>
+        <?=lang('od');?>: <select id="from1" name="from1" onchange="reindex_to()"></select>
+        <?=lang('do');?>: <select id="to1" name="to1"></select>
     </div>
-    godziny dostawy weekendowej<?=form_error('from1');?> <?=form_error('to1');?>
+    <?=lang('godziny_dostawy');?><?=form_error('from1');?> <?=form_error('to1');?>
 </label>
 
 <div id="banned_days"></div>

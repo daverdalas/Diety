@@ -59,15 +59,15 @@ class User_panel extends T01_Controller {
         {
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('name', 'imię', 'required|min_length[2]|max_length[255]');
-            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[2]|max_length[255]');
-            $this->form_validation->set_rules('phone', 'telefon', 'required|min_length[9]|max_length[255]|callback_phone_check');
-            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[3]');
+            $this->form_validation->set_rules('name', lang('imie'), 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('surname', lang('nazwisko'), 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('phone', lang('telefon'), 'required|min_length[9]|max_length[255]|callback_phone_check');
+            $this->form_validation->set_rules('addy', lang('adres_dostawy'), 'required|min_length[3]');
 
             if( $this->input->post("company") != null )
             {
-                $this->form_validation->set_rules('nip', 'nip', 'required|min_length[10]|max_length[255]|callback_nip_check');
-                $this->form_validation->set_rules('fvat', 'adres fvat', 'required|min_length[3]');
+                $this->form_validation->set_rules('nip', lang('nip'), 'required|min_length[10]|max_length[255]|callback_nip_check');
+                $this->form_validation->set_rules('fvat', lang('adres_firmy'), 'required|min_length[3]');
             }
 
             if ($this->form_validation->run() == TRUE )
@@ -96,21 +96,21 @@ class User_panel extends T01_Controller {
         {
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('email', 'email', 'required|max_length[255]|valid_email');
-            $this->form_validation->set_rules('name', 'imię', 'required|min_length[2]|max_length[255]');
-            $this->form_validation->set_rules('surname', 'nazwisko', 'required|min_length[2]|max_length[255]');
-            $this->form_validation->set_rules('phone', 'telefon', 'required|min_length[9]|max_length[255]|callback_phone_check');
+            $this->form_validation->set_rules('email', lang('email'), 'required|max_length[255]|valid_email');
+            $this->form_validation->set_rules('name', lang('imie'), 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('surname', lang('nazwisko'), 'required|min_length[2]|max_length[255]');
+            $this->form_validation->set_rules('phone', lang('telefon'), 'required|min_length[9]|max_length[255]|callback_phone_check');
 
             if( $this->input->post("weekends") != null )
             {
-                $this->form_validation->set_rules('addy2', 'adres dostawy', 'required|min_length[3]');
-                $this->form_validation->set_rules('from1', 'od', 'required|integer|numeric|greater_than[5]|less_than[11]');
-                $this->form_validation->set_rules('to1', 'do', 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
+                $this->form_validation->set_rules('addy2', lang('adres_dostawy'), 'required|min_length[3]');
+                $this->form_validation->set_rules('from1', lang('od'), 'required|integer|numeric|greater_than[5]|less_than[11]');
+                $this->form_validation->set_rules('to1', lang('do'), 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
             }
 
-            $this->form_validation->set_rules('addy', 'adres dostawy', 'required|min_length[3]');
-            $this->form_validation->set_rules('from', 'od', 'required|integer|numeric|greater_than[5]|less_than[11]');
-            $this->form_validation->set_rules('to', 'do', 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
+            $this->form_validation->set_rules('addy', lang('adres_dostawy'), 'required|min_length[3]');
+            $this->form_validation->set_rules('from', lang('od'), 'required|integer|numeric|greater_than[5]|less_than[11]');
+            $this->form_validation->set_rules('to', lang('do'), 'required|integer|numeric|greater_than['.$this->input->post("from").']|less_than[12]');
 
             if ($this->form_validation->run() == TRUE ) {
                 $orders = $this->Ordermodel->update(
@@ -154,7 +154,7 @@ class User_panel extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) > 11 || strlen($str) < 9 )
         {
-            $this->form_validation->set_message('phone_check', 'form_validation_t01_phone');
+            $this->form_validation->set_message('phone_check', lang('form_validation_t01_phone'));
             return FALSE;
         }
         else
@@ -168,7 +168,7 @@ class User_panel extends T01_Controller {
         $str = preg_replace( '/[^0-9]/','',$str );
         if ( strlen($str) != 10 )
         {
-            $this->form_validation->set_message('nip_check', 'form_validation_t01_nip');
+            $this->form_validation->set_message('nip_check', lang('form_validation_t01_nip'));
             return FALSE;
         }
         else
