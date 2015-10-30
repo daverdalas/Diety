@@ -33,10 +33,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class = "col-md-6 centered">
                 <div class = "col-md-12 padding-bottom-30 border-bottom margin-bottom-10">
                     <div class = "row">
-                        <?php foreach( $diets as $diet ): ?>
+                        <?php 
+                        
+                        foreach( $diets as $diet ): ?>
                         <div class = "col-sm-12 no-padding text-uppercase text-left about-user">
-                            <div class = "col-xs-12 col-sm-6 border-top border-bottom no-padding about-user-label"><?php echo $diet[0]->name?></div>
-                                <?=anchor('/admin_panel/diet/'.$diet[0]->id, 'edytuj', 'class = "btn-account col-xs-12 col-sm-6 text-uppercase text-left"');?>
+                            <div class = "col-xs-12 col-sm-6 border-top border-bottom no-padding about-user-label"><?php echo $diet->name?></div>
+                                <?=anchor('/admin_panel/diet/'.$diet->id, 'edytuj', 'class = "btn-account col-xs-6 col-sm-3 text-uppercase text-left"');?>
+                            <?=anchor('/admin_panel/deleteDiet/'.$diet->id, 'USUŃ', 'class = "btn-account col-xs-6 col-sm-3 text-uppercase text-left"');?>
                         </div>
                         <?php endforeach; ?>
                     </div>
