@@ -78,7 +78,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <ul>
 <? foreach( $orders as $order ): ?>
     <? if( $order->payment != null ): ?>
-    <li><?=$order->timestamp;?> <?=$order->status;?> <?=anchor("/admin_panel/payment_status/".$order->payment, "szczegóły");?></li>
+    <li><?=$order->timestamp;?> <?=lang($order->status);?> <?=anchor("/admin_panel/payment_status/".$order->payment, "szczegóły");?></li>
     <? endif; ?>
 <? endforeach; ?>
 </ul>

@@ -39,8 +39,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <p><?=$msg;?></p>
     <?=form_open();?>
 
-    <label><input type="text" name="email" value="<?=set_value('email');?>"/>email<?=form_error('email');?></label>
-    <label><input type="password" name="pass" value="<?=set_value('pass1');?>"/>hasło<?=form_error('pass1');?></label>
+    <label><input type="text" name="email" value="<?=set_value('email');?>"/><?=lang('email');?><?=form_error('email');?></label>
+    <label><input type="password" name="pass" value="<?=set_value('pass1');?>"/><?=lang('haslo');?><?=form_error('pass1');?></label>
 
     <?=form_submit("","Zaloguj");?>
     <?=anchor('/register', 'zarejestrujh');?>

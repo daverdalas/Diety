@@ -10,6 +10,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $lang['form_validation_t01_diet']		= 'błedna konfiguracja diety';
 $lang['form_validation_t01_date']		= 'data %s wskazuje na przeszłość';
-$lang['form_validation_t01_exists']		= '%s already exists';
-$lang['form_validation_t01_phone']		= '%s is not a valid phone';
-$lang['form_validation_t01_nip']		= '%s is not a valid nip';
+$lang['form_validation_t01_exists']		= '%s już istnieje w bazie';
+$lang['form_validation_t01_phone']		= '%s nie jest prawidłowym numerem telefonu';
+$lang['form_validation_t01_nip']		= '%s nie jest prawidłowym numerem NIP';

@@ -11,8 +11,8 @@ class Login extends T01_Controller {
         {
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('email', 'email', 'required');
-            $this->form_validation->set_rules('pass', 'hasło', 'required');
+            $this->form_validation->set_rules('email', lang('email'), 'required');
+            $this->form_validation->set_rules('pass', lang('hasło'), 'required');
 
             if ($this->form_validation->run() == TRUE )
             {
@@ -22,10 +22,10 @@ class Login extends T01_Controller {
                 if( $session_data != null ) {
                     switch( $session_data->status ) {
                         case 'N':
-                            $this->show('login', array('msg' => 'Konto nieaktywne, zobacz email'));
+                            $this->show('login', array('msg' => lang('inactive')));
                             return;
                         case 'B':
-                            $this->show('login', array('msg' => 'Konto zablokowane'));
+                            $this->show('login', array('msg' => lang('blocked')));
                             return;
                         default:
                             $this->session->set_userdata('user', $session_data);
@@ -35,7 +35,7 @@ class Login extends T01_Controller {
                     }
                 }
                 else {
-                    $this->show('login', array( 'msg' => 'Błąd logowania'));
+                    $this->show('login', array( 'msg' => lang('login_error')));
                     return;
                 }
             }
