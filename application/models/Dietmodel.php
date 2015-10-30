@@ -193,12 +193,13 @@ class Dietmodel extends CI_Model {
                             ->where('days', $data['days'][$n])
                             ->update(
                                     'diet_pricelist', array(
-                                'price' => ceil($data['price'][$n][$diet->calories] * 100)
+                                     'price' => ceil($data['price'][$n][$diet->calories] * 100)
                                     )
                     );
                 $this->db->where('id', $diet->id)->update('diets', array('calories' => $kcal));
                 $kcal = next($energy);
             }
+            $this->db->where('id', $diet->id)->update('diets',array('name'=>$data['nname']));
         }
         return $id;
     }

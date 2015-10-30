@@ -163,10 +163,12 @@ class Admin_panel extends T01_Controller {
         if (count($this->input->post()) > 0) {
             $this->load->library('form_validation');
 
-            if ($id == 0)
-                $this->form_validation->set_rules('name', lang('diet_name'), 'required|min_length[3]|max_length[255]|callback_diet_check');
+            if ($id == 0){
+                $this->form_validation->set_rules('nname', lang('diet_name'), 'required|min_length[3]|max_length[255]|callback_diet_check');
+                $_POST['name']=$_POST['nname'];
+            }
             else
-                $this->form_validation->set_rules('name', lang('diet_name'), 'required|min_length[3]|max_length[255]');
+                $this->form_validation->set_rules('nname', lang('diet_name'), 'required|min_length[3]|max_length[255]');
 
             $prices = $this->input->post('price');
             $energy = $this->input->post('energy');
