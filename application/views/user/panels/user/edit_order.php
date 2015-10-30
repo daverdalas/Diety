@@ -5,41 +5,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <title>COOKING</title>
+    <meta name="viewport" content="width=device-width">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href=<?php echo base_url()."/media/css/bootstrap.min.css" ?>>
+    <link rel="stylesheet" type="text/css" href=<?php echo base_url()."/media/css/bootstrap-theme.min.css"?>>
+    <link rel="stylesheet" type="text/css" href=<?php echo base_url()."/media/css/style.css"?>>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/jquery-1.11.3.min.js"?>></script>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/bootstrap.min.js"?>?>?>></script>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/enscroll.min.js"?>?>></script>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/jquery-ui.js"?>></script>
     <style>
-        input {
-            display:block;
-            width:300px;
-        }
-        select {
-            display:inline;
-            width:120px;
-        }
-        input[type=checkbox] {
-            display:inline;
-            margin-top:10px;
-            width:10px;
-        }
-        input[type=submit] {
-            margin-top:10px;
-        }
-        label {
-            display:block;
-            font-size: small;
-            width:300px;
-        }
-        label p {
-            padding-left:20px;
-            display:inline;
-            color:red;
-            font-size: smaller;
-        }
         .weekends {
             display:none;
         }
     </style>
-
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
     <script>
 
@@ -177,45 +157,76 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     </script>
 </head>
-<body>
-<?=form_open();?>
-
-<input type="hidden" name="id" value="<?=$order->id;?>"/>
-
-<label><input type="text" name="name" value="<?=set_value('name',$order->name);?>"/><?=lang('imie');?><?=form_error('name');?></label>
-<label><input type="text" name="surname" value="<?=set_value('surname',$order->surname);?>"/><?=lang('nazwisko');?><?=form_error('surname');?></label>
-<label><input type="text" name="phone" value="<?=set_value('phone',$order->phone);?>"/><?=lang('telefon');?><?=form_error('phone');?></label>
-<label><input type="text" name="email" value="<?=set_value('email',$order->email);?>"/><?=lang('email');?><?=form_error('email');?></label>
-
-<label><input type="text" name="addy" value="<?=set_value('addy',$order->addy);?>"/><?=lang('adres_dostawy');?><?=form_error('addy');?></label>
-<label>
-    <div>
-        <?=lang('od');?>: <select id="from" name="from" onchange="reindex_to()"></select>
-        <?=lang('do');?>: <select id="to" name="to"></select>
+<body class = "body-app">
+    <?php include('application/views/header.php'); ?>
+    <div class = "row gray margin-top-30">
+        <hr>
     </div>
-    <?=lang('godziny_dostawy');?> <?=form_error('from');?> <?=form_error('to');?>
-</label>
+    <section class = "row order edit-order padding-bottom-30">
+        <div class = "col-md-12 margin-top-30 text-center padding-bottom-30">
+            <h1 class = "text-uppercase">edycja zamówienia</h1> 
+            <div class = "col-md-5 centered"> 
+            <?=form_open("", "class = 'col-xs-12 margin-top-50 margin-bottom-100 form-horizontal text-left text-uppercase no-padding'");?>
 
-<label>
-    <input type="checkbox" name="weekends" id="weekends" <?=set_checkbox('weekends', 'on', $order->weekend == 1);?> onchange="toggleWeekend()"/>
-    <?=lang('dieta_z_weekendami');?>
-</label>
-
-<label class="weekends"><input type="text" name="addy2" value="<?=set_value('addy2', $order->addy_w );?>"/><?=lang('adres_dostawy');?><?=form_error('addy2');?></label>
-<label class="weekends">
-    <div>
-        <?=lang('od');?>: <select id="from1" name="from1" onchange="reindex_to()"></select>
-        <?=lang('do');?>: <select id="to1" name="to1"></select>
-    </div>
-    <?=lang('godziny_dostawy');?><?=form_error('from1');?> <?=form_error('to1');?>
-</label>
-
-<div id="banned_days"></div>
-<div class="date-pick"/></div>
-
-<?=form_submit("","kontynuuj");?>
-<a href='#' onclick="window.history.back(); return false;">cancel</a>
-<?=form_close();?>
-
+            <input type="hidden" name="id" value="<?=$order->id;?>"/>
+            <div class = "col-sm-12 form-group about-user">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">Imię</label>
+                <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="name" value="<?=set_value('name',$order->name);?>"/><label class = "error"><?=form_error('name');?></label>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">Nazwisko</label>
+                <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="surname" value="<?=set_value('surname',$order->surname);?>"/><label class = "error"><?=form_error('surname');?></label>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">numer tel.</label>
+                <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="phone" value="<?=set_value('phone',$order->phone);?>"/><label class = "error"><?=form_error('phone');?></label>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">Email</label>
+                <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="email" value="<?=set_value('email',$order->email);?>"/><label class = "error"><?=form_error('email');?></label>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">adres dostawy</label>
+                <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="addy" value="<?=set_value('addy',$order->addy);?>"/><label class = "error"><?=form_error('addy');?></label>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">godziny dostawy</label>
+                <div class = "col-xs-12 col-sm-6 text-uppercase hours">Od: <select id="from" name="from" onchange="reindex_to()"></select>Do: <select id="to" name="to"></select><label class = "error"><?=form_error('from');?> <?=form_error('to');?></label></div>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <div class = "checkbox centered text-left no-padding">
+                    <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">Dieta z weekendami</label>
+                   <input type="checkbox" name="weekends" id="weekends" <?=set_checkbox('weekends', 'on', $order->weekend == 1);?> onchange="toggleWeekend()"/>
+                    <label class = "plusweekends"><span></span> 
+                    </label>
+                </div>
+            </div>
+            <div class = "col-sm-12 form-group about-user weekends">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">adres weekendowy</label>
+                <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="addy2" value="<?=set_value('addy2', $order->addy_w );?>"/><label class = "error"><?=form_error('addy2');?></label>
+            </div>
+            <div class = "col-sm-12 form-group about-user weekends">
+                <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">godziny dostawy</label>
+                <div class = "col-xs-12 col-sm-6 text-uppercase hours">Od: <select id="from1" name="from1" onchange="reindex_to()"></select>Do: <select id="to1" name="to1"></select><label class = "error"><?=form_error('from1');?> <?=form_error('to1');?></label></div>
+            </div>
+            <div class = "col-sm-12 form-group about-user">
+                <h3 class = "col-xs-12 text-uppercase text-center">Zaznacz dni, w których nie chcesz otrzymać dostawy.</h3>
+                <p class = "col-xs-12 text-center margin-top-20"><b>Rezygnacja z dnia następnego możliwa jest do godziny 14:00 dnia poprzedzającego dostawę.</b></p>
+                <div class = "col-sm-12" id="banned_days"></div>
+                <div class = "col-xs-12 margin-top-30 no-padding">
+                    <div class="date-pick centered">
+                    </div>
+                </div>
+            </div>
+            <div class = "col-xs-12 text-center">
+                <div class = "btn-back fluid-container margin-top-50">
+                    <?=form_submit("","kontynuuj", "class = 'btn btn-lg btn-show text-uppercase'");?>
+                </div>
+                <h4><a href="" class = 'cancel text-lowercase' onclick="window.history.back();">anuluj</a></h4>
+            </div>
+            <?=form_close();?>
+        </div>
+    </section>
+    <?php include('application/views/footer.php'); ?>
 </body>
 </html>

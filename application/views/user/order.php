@@ -4,40 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <style>
-        input {
-            display:block;
-            width:300px;
-        }
-        select {
-            display:block;
-            width:300px;
-        }
-        input[type=checkbox] {
-            display:inline;
-            width:10px;
-        }
-        input[type=submit] {
-            margin-top:10px;
-        }
-        label {
-            display:block;
-            font-size: small;
-            width:300px;
-        }
-        label p {
-            padding-left:20px;
-            display:inline;
-            color:red;
-            font-size: smaller;
-        }
-        .ui-datepicker {
-            background: #fff;
-            border: 1px solid #555;
-        }
-    </style>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <title>COOKING</title>
+    <meta name="viewport" content="width=device-width">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href=<?php echo base_url()."/media/css/bootstrap.min.css" ?>>
+    <link rel="stylesheet" type="text/css" href=<?php echo base_url()."/media/css/bootstrap-theme.min.css"?>>
+    <link rel="stylesheet" type="text/css" href=<?php echo base_url()."/media/css/style.css"?>>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/jquery-1.11.3.min.js"?>></script>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/bootstrap.min.js"?>?>?>></script>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/enscroll.min.js"?>?>></script>
+    <script type="text/javascript" src=<?php echo base_url()."/media/js/jquery-ui.js"?>></script>
     <script>
         var diets = [];
         <? foreach( $diets as $n => $d ): ?>
@@ -124,26 +100,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
             $('.date-pick').datepicker( "refresh" );
         }
-
         var checkWeekend = function(){};
-
         function weekendOff(date)
         {
             return date.getDay() == 6 || date.getDay() == 0;
         }
-
         function weekendOn(date)
         {
             return false;
         }
-
         var serverDate = new Date(<?=time();?>*1000);
         var deadline = new Date(serverDate);
         deadline.setDate(serverDate.getDate()+( serverDate.getHours() >= 14 ? 2 : 1 ));
         deadline.setHours(0);
         deadline.setMinutes(0);
         deadline.setSeconds(0);
-
         $(document).ready(
             function(){
                 $('#diet').html('');
@@ -163,60 +134,71 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         if( date<deadline ) return [false, ""];
                         return [true, ""];
                     }
-
                 });
             } );
     </script>
 </head>
-<body>
-
-<?=form_open();?>
-
-<label>
-    <select id="diet" name="diet" onchange="load_diet();">
-    </select>
-    rodzaj diety<?=form_error('id');?>
-</label>
-
-<label>
-    <select id="calories" name="calories" onchange="load_calories();">
-    </select>
-    kaloryczność<?=form_error('id');?>
-</label>
-
-<label>
-    <select id="time" name="time" onchange="set_price();">
-    </select>
-    okres diety<?=form_error('id');?>
-</label>
-
-<label>
-    <input type="number" id="number" name="number" min="1" onchange="set_num();" value="<?=set_value('number',1 );?>"/>
-    <input type="hidden" id="id" name="id" value="<?=set_value('id' );?>"/>
-    <?=lang('number');?><?=form_error('number');?>
-</label>
-
-<label>
-    <?
-        $now = new DateTime();
-        $hour = $now->format('G');
-        $now->setTime( 0,0 );
-        $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
-        $deadline = $now->format("Y-m-d")
-    ?>
-    <input type="text" name="date" id="date" value="<?=set_value('date', $deadline );?>"/>
-    <?=lang('date');?><?=form_error('date');?>
-</label>
-
-<label>
-    <input type="checkbox" name="weekends" id="weekends" <?=set_checkbox('weekends', 'on', true);?> onchange="toggleWeekend()"/>
-    <?=lang('dieta_z_weekendami');?>
-</label>
-
-<h3 id="price"></h3>
-
-<?=form_submit("","Zamów");?>
-<?=anchor('/', 'cancel');?>
-<?=form_close();?>
+<body class = "body-app">
+    <?php include('application/views/header.php'); ?>
+    <div class = "row gray margin-top-30">
+        <hr>
+    </div>
+    <section class = "row order padding-bottom-30">
+        <div class = "col-md-12 margin-top-30 text-center padding-bottom-30">
+            <h1 class = "text-uppercase">Zamów</h1>
+            <div class = "col-md-6 centered">
+                <?=form_open("", "class = 'col-xs-12 margin-top-50 no-padding margin-bottom-100 form-horizontal text-center'");?>
+                    <div class = "form-group text-uppercase text-left">
+                        <label class = "col-xs-12 col-sm-6 border-top border-bottom">wybierz rodzaj diety</label>
+                        <select id="diet" name="diet" onchange="load_diet();" class = "col-xs-12 col-sm-6 text-uppercase">
+                        </select><label class = "error"><?=form_error('id');?></label>
+                    </div>
+                    <div class = "form-group text-uppercase text-left">
+                        <label class = "col-xs-12 col-sm-6 border-top border-bottom">Kaloryczność</label>
+                        <select id="calories" name="calories" onchange="load_calories();" class = "col-xs-12 col-sm-6 text-uppercase">
+                        </select><label class = "error"><?=form_error('id');?></label>
+                    </div>
+                    <div class = "form-group text-uppercase text-left">
+                        <label class = "col-xs-12 col-sm-6 border-top border-bottom">wybierz okres diety</label>
+                        <select id="time" name="time" onchange="set_price();" class = "col-xs-12 col-sm-6 text-uppercase">
+                        </select><label class = "error"><?=form_error('id');?></label>
+                    </div>
+                    <div class = "form-group text-uppercase text-left">
+                        <label class = "col-xs-12 col-sm-6 border-top border-bottom">data rozpoczęcia diety</label>
+                        <?php
+                        $now = new DateTime();
+                        $hour = $now->format('G');
+                        $now->setTime( 0,0 );
+                        $now->modify( "+".( $hour > 14 ? 2 : 1 )." day" );
+                        $deadline = $now->format("Y-m-d")
+                        ?>
+                        <input type="text" name="date" id="date" value="<?=set_value('date', $deadline );?>" class = "col-xs-8 col-sm-6 text-uppercase"/><label class = "error"><?=form_error('date');?></label>
+                    </div>
+                    <div class = "form-group text-uppercase text-left">
+                        <label class = "col-xs-12 col-sm-6 border-top border-bottom">ilość zestawów</label>
+                        <input type="number" id="number" name="number" min="1" onchange="set_num();" value="<?=set_value('number',1 );?>" class = "col-xs-12 col-sm-6 text-uppercase"/>
+                        <input type="hidden" id="id" name="id" value="<?=set_value('id' );?>"/><label class = "error"><?=form_error('number');?></label>
+                    </div>
+                    <div class = "form-group text-uppercase text-left">
+                        <div class = "checkbox centered text-left">
+                            <label class = "col-xs-12 col-sm-6 border-top border-bottom">Dieta z weekendami</label>
+                            <input type = "checkbox" checked required = "true" name = "rules">
+                            <label class = "plusweekends"><span></span> 
+                            </label>
+                        </div>
+                    </div>
+                    <div class = "form-group text-uppercase text-left margin-top-20">
+                        <label class = "col-xs-12 col-sm-6 border-top border-bottom">cena</label>
+                        <h3 id="price" class = "col-xs-12 col-sm-6 text-uppercase"></h3>
+                    </div>
+                    <div class = "btn-back fluid-container centered margin-top-50">
+                        <?=form_submit("","Zamów", "class = 'btn btn-lg btn-show text-uppercase'");?>
+                    </div>
+                    <h4><?=anchor('/', 'anuluj', "class = 'cancel'");?></h4>
+                <?=form_close();?>
+            </div>
+        </div>
+    </section>
+    <?php include('application/views/footer.php'); ?>
 </body>
 </html>

@@ -32,7 +32,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     nip: <?=$order->data->nip;?><br>
     <br>
     <b>sprzedawca:</b><br>
-    nazwa<br>
+    nazwa: COOKING<br>
     adres<br>
     nip: ***-***-**-**<br>
     <br>
