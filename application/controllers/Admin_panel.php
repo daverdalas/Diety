@@ -154,6 +154,7 @@ class Admin_panel extends T01_Controller {
             $this->load->library('form_validation');
 
             if( $id == 0 ) $this->form_validation->set_rules('name', 'nazwa diety', 'required|min_length[3]|max_length[255]|callback_diet_check');
+            else $this->form_validation->set_rules('name', 'nazwa diety', 'required|min_length[3]|max_length[255]');
 
             $prices = $this->input->post('price');
             foreach( $prices as $k => $v )
