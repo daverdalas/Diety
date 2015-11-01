@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <th style="width:10%;">Kwota VAT</th>
             <th style="width:10%;">Wartość brutto</th>
         </tr>
-        <? foreach( $order->cart as $n => $item ): ?>
+        <?php foreach( $order->cart as $n => $item ): ?>
         <tr>
             <td><?=$n+1;?></td>
             <td><?=$item->diet;?></td>
@@ -62,7 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <td><?=sprintf("%01.2f", $item->price/100-$item->price/123);?></td>
             <td><?=sprintf("%01.2f", $item->price/100);?></td>
         </tr>
-        <? endforeach;?>
+        <?php endforeach;?>
         <tr>
             <td colspan="4"></td>
             <th colspan="2">razem</th>

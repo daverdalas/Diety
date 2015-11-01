@@ -50,7 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <?=form_open("", "class = 'col-xs-12 margin-top-50 margin-bottom-50 form-horizontal text-left text-uppercase'");?>
                 <div class = "col-sm-12 form-group about-user">
                     <label class = "col-xs-12 col-sm-6 border-top border-bottom no-padding">Nazwa diety</label>
-                    <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="name" value="<?=set_value('name', isset($name) ? $name : "");?>" <?=( isset($name) ? 'readonly' : '' );?>/><?=form_error('name');?>
+                    <input type="hidden" class = "col-xs-12 col-sm-6 text-uppercase" name="name" value="<?=set_value('name', isset($name) ? $name : "");?>" <?=( isset($name) ? 'readonly' : '' );?>/>
+                    <input type="text" class = "col-xs-12 col-sm-6 text-uppercase" name="nname" value="<?=set_value('name', isset($name) ? $name : "");?>" /><?=form_error('nname');?>
                 </div>
                 <table class = "table table-bordered text-uppercase">
                     <tr>
@@ -84,7 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </td>
                             <?php  endforeach; ?>
                         </tr>
-                        <? $p++; ?>
+                        <?php $p++; ?>
                     <?php $p++; endforeach; ?>
                 </table>
                 <div class = "col-md-12 text-center">

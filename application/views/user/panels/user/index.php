@@ -46,7 +46,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <!--<div class = "col-md-12 no-padding">
                     <div class = "col-sm-12 order-list">
                         <h2 class = "text-uppercase margin-bottom-30 col-md-12">historia zamówień</h2>
-                        <? foreach( $orders as $order ): ?>
+                        <?php foreach( $orders as $order ): ?>
                             <ul class = "list-unstyled col-xs-12 col-sm-6 col-md-4 text-center margin-top-20">
                                 <li><u><b><?=$order->diet;?></b></u></li>
                                 <li>pozostało <?=$order->days_left;?> z <?=$order->days_total;?> dostaw</li>
@@ -56,7 +56,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     do <?=$calendars[$order->id][0]->to;?>:00
                                 </li>
                                 <li><b>ostatnia dostawa</b></li>
-                                <li><? $c = count($calendars[$order->id])-1; ?></li>
+                                <li><?php $c = count($calendars[$order->id])-1; ?></li>
                                 <li><?=$calendars[$order->id][$c]->day;?>
                                     od <?=$calendars[$order->id][$c]->from;?>:00
                                     do <?=$calendars[$order->id][$c]->to;?>:00
@@ -65,7 +65,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <li><?=$calendars[$order->id][0]->addy;?></li>
                                 <li class = "text-uppercase"><b><u><?=anchor('/user_panel/edit/'.$order->id, 'edytuj');?></u></b></li>
                             </ul>
-                        <? endforeach; ?>
+                        <?php endforeach; ?>
                     </div>
                 </div>-->
             </div>

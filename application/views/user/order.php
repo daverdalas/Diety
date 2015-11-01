@@ -16,21 +16,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script type="text/javascript" src=<?php echo base_url()."/media/js/jquery-ui.js"?>></script>
     <script>
         var diets = [];
-        <? foreach( $diets as $n => $d ): ?>
+        <?php foreach( $diets as $n => $d ): ?>
             diets['<?=$n;?>'] = [];
-            <? foreach( $d as $diet ): ?>
+            <?php foreach( $d as $diet ): ?>
             diets['<?=$n;?>']['<?=$diet->calories;?>'] = <?=$diet->id;?>;
-            <? endforeach; ?>
-        <? endforeach; ?>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
         var prices = [];
         var price_list = [];
-        <? foreach( $prices as $n => $p ): ?>
+        <?php foreach( $prices as $n => $p ): ?>
             prices['<?=$n;?>'] = [];
-            <? foreach( $p as $price ): ?>
+            <?php foreach( $p as $price ): ?>
             prices['<?=$n;?>']['<?=$price->name;?>'] = <?=$price->id;?>;
             price_list[ <?=$price->id;?> ] = <?=$price->price;?>;
-            <? endforeach; ?>
-        <? endforeach; ?>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
 
         function load_diet( )
         {

@@ -37,24 +37,24 @@ var_dump($cart);
 			<th style = "text-align: left">godziny dostawy:</th>
 			<td style = "padding-left: 2em">od <?php echo $data->from ?> do <?php echo $data->to ?></td>
 		</tr>
-		<? if(array_key_exists('company', $data)): ?>
+		<?php if(array_key_exists('company', $data)): ?>
 			<th>Nazwa firmy:</th>
 			<td><?php echo $data->company ?></td>
 			<th>Adres firmy:</th>
 			<td><?php echo $data->fvat ?></td>
 			<th>NIP:</th>
 			<td><?php echo $data->nip ?></td>
-		<? endif; ?>
-		<? if(array_key_exists('addy_w', $data)): ?>
+		<?php endif; ?>
+		<?php if(array_key_exists('addy_w', $data)): ?>
 		<tr>
 			<th>adres weekendowy:</th>
 			<td><?php echo $data->addy_w ?></td>
 		</tr>
-		<? endif; ?>
-		<? if(array_key_exists('from_w', $data)): ?>
+		<?php endif; ?>
+		<?php if(array_key_exists('from_w', $data)): ?>
 			<th>godziny dostawy w weekend:</th>
 			<td>od <?php echo $data->from_w ?> do <?php echo $data->to_w ?></td>
-		<? endif; ?>
+		<?php endif; ?>
 	</table>
 	</br>
 	<table style = "color: #58595b; margin-top: 30px;" class = "order">
@@ -69,7 +69,7 @@ var_dump($cart);
 			</tr>
 		</thead>
 		<tbody>
-			<? foreach( $cart['cart'] as $order ): ?>
+			<?php foreach( $cart['cart'] as $order ): ?>
 			<tr style = "line-height:2em;">
 				<td style = "border-bottom: dashed 1px #58595b; text-align: left; padding-left: 1em; padding-right: 1em;"><?php echo $order->label;?></td>
 				<td style = "border-bottom: dashed 1px #58595b; text-align: left; padding-left: 1em; padding-right: 1em;"><?php echo $order->quantity; ?></td>
@@ -78,7 +78,7 @@ var_dump($cart);
 				<td style = "border-bottom: dashed 1px #58595b; text-align: left; padding-left: 1em; padding-right: 1em;"><?php echo $order->unitprice; ?></td>
 				<td style = "border-bottom: dashed 1px #58595b; padding-left: 1em; padding-right: 1em; text-align:right"><?php echo $order->cost ?></td>
 			</tr>
-			<? endforeach; ?>
+			<?php endforeach; ?>
 			<tr class = "all" style = "line-height:2em;">
 				<th style = "text-align: left" colspan = '4'>Całkowity koszt zamówienia</th>
 				<td colspan = '2' style = "text-align: right;"><h2 style = "margin: 0;"><?php echo $cart['cost'] ?> PLN</h2></td> 
@@ -87,10 +87,10 @@ var_dump($cart);
 	</table>
 	</br>
 	<table class = "user">
-		<? if(array_key_exists('comment', $data)): ?>
+		<?php if(array_key_exists('comment', $data)): ?>
 			<th style = "text-align: left">Dodatkowe uwagi:</th>
 			<td style = "padding-left: 2em"><?php echo $data->comment;?><td>
-		<? endif ?>
+		<?php endif ?>
 	</table>
 	<p style = "margin-top:20px;">Jeśli jeszcze nie opłaciłeś swojego zamówienia, możesz to zrobić teraz klikając w link: <?=anchor("/order/process/$order_id");?></p>
 	</br>

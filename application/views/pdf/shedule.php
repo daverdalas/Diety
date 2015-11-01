@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <th style="width:30%;">dieta</th>
             <th style="width:40%;">osoba</th>
         </tr>
-        <? foreach( $list as $entry ): ?>
+        <?php foreach( $list as $entry ): ?>
         <tr>
             <td>od <?=$entry->from;?>:00 do <?=$entry->to;?>:00</td>
             <td><?=$entry->quantity;?> x <?=$entry->diet;?>:00</td>
@@ -39,6 +39,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <?=$entry->phone;?>
             </td>
         </tr>
-        <? endforeach;?>
+        <?php endforeach;?>
     </table>
 </page>

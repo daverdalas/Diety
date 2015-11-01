@@ -48,20 +48,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class = "col-sm-12 col-md-6 col-md-offset-3 order-list">
                 <h2 class = "text-uppercase margin-bottom-30 col-md-12">historia zamówień</h2>
-                <? foreach( $plans as $order ): ?>
+                <?php foreach( $plans as $order ): ?>
                     <ul class = "list-unstyled col-xs-12 col-sm-6 col-md-4 text-center margin-top-20">
                         <li><u><b><?=$order->diet;?></b></u></li>
                         <li>pozostało <?=$order->days_left;?> z <?=$order->days_total;?> dostaw</li>
-                        <? if( array_key_exists( $order->id, $calendars ) && count($calendars[$order->id]) ): ?>
+                        <?php if( array_key_exists( $order->id, $calendars ) && count($calendars[$order->id]) ): ?>
                         <li>najbliższa dostawa:<?=$calendars[$order->id][0]->day;?></li>
                         <li>
                             <?=$calendars[$order->id][0]->addy;?>
                             od <?=$calendars[$order->id][0]->from;?>:00
                             do <?=$calendars[$order->id][0]->to;?>:00
                         </li>
-                        <? endif; ?>
+                        <?php endif; ?>
                         <li>
-                            <? if( $order->invoice && $order->order->company != null): ?>
+                            <?php if( $order->invoice && $order->order->company != null): ?>
                             <ul class = "list-unstyled">
                                 <li><b>dane do faktury:</b></li>
                                 <li>nazwa firmy:<?=$order->order->company;?></li>
@@ -69,36 +69,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <li>adres faktury:<?=$order->order->fvat;?></li>
                                 <li><b><?=anchor("/order/invoice/".$order->invoice->id, "pobierz fakturę");?></b></li>
                             </ul>
-                            <? endif; ?>
+                            <?php endif; ?>
                         </li>
 
-                        <? if( array_key_exists( $order->id, $calendars ) && count($calendars[$order->id]) ): ?>
+                        <?php if( array_key_exists( $order->id, $calendars ) && count($calendars[$order->id]) ): ?>
                         <li><b>kalendarz dostaw:</b></li>
-                        <? foreach( $calendars[$order->id] as $delivery ): ?>
-                            <li <? if($delivery->weekend) echo "class='weekend'"; ?>>
+                        <?php foreach( $calendars[$order->id] as $delivery ): ?>
+                            <li <?php if($delivery->weekend) echo "class='weekend'"; ?>>
                                 <?=$delivery->day;?>
                                 od <?=$delivery->from;?>:00
                                 do <?=$delivery->to;?>:00
                                 <?=$delivery->addy;?>
                             </li>
-                        <? endforeach; ?>
-                        <? endif; ?>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
                         <li><u><b><?=anchor("/order/delete/".$order->id, "usuń zamówienie", array('class'=>'delete text-uppercase', 'onclick'=>"return ConfirmDelete();"));?></b></u></li>
                     </ul>
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </div>
             <div class = "col-sm-12 col-md-6 col-md-offset-3 text-uppercase">
                 <h2 class = "text-uppercase margin-bottom-30">historia płatności</h2>
                 <table class = "table table-payed table-striped">
-                <? foreach( $orders as $order ): ?>
-                    <? if( $order->payment != null ): ?>
+                <?php foreach( $orders as $order ): ?>
+                    <?php if( $order->payment != null ): ?>
                     <tr>
                         <td class = "text-left"><?=$order->timestamp;?></td>
                         <td><?php if ($order->status === 'COMPLETED') { echo "opłacone" ;} else { echo "nieopłacone"; }  ?></td>
                         <th class = "text-right"><?=anchor("/admin_panel/payment_status/".$order->payment, "szczegóły");?></th>
                     </tr>
-                    <? endif; ?>
-                <? endforeach; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
                 </table>
             </div>
         </div>

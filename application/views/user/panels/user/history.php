@@ -43,12 +43,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th>opcje</th>
                                 </tr>
                             </thead>
-                            <? if( $orders != null ): ?>
-                                <? foreach( $orders as $order ): ?>
-                                <? $first = true; ?>
-                                <? foreach( $order->cart as $diet ): ?>
+                            <?php if( $orders != null ): ?>
+                                <?php foreach( $orders as $order ): ?>
+                                <?php $first = true; ?>
+                                <?php foreach( $order->cart as $diet ): ?>
                                 <tr class="status-<?=$diet->status;?>">
-                                    <? if($first): ?>
+                                    <?php if($first): ?>
                                     <td rowspan="<?=count($order->cart);?>">
                                         <ul>
                                             <li>data: <?=$order->data->timestamp;?></li>
@@ -74,7 +74,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <li class = "comment"><i><?=$order->data->comment;?></i></li>
                                         </ul>
                                     </td>
-                                    <? endif; ?>
+                                    <?php endif; ?>
                                     <td>
                                         <ul>
                                             <li><?=$diet->quantity;?> x <?=$diet->diet;?></li>
@@ -107,7 +107,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </td>
                                     <td>
                                         <ul>
-                                        <? if( $diet->weekend ): ?>
+                                        <?php if( $diet->weekend ): ?>
                                             <li><?=$diet->name;?> <?=$diet->surname;?></li>
                                             <li><?=$diet->email;?></li>
                                             <li><?=$diet->phone;?></li>
@@ -116,9 +116,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 od <?=( $diet->time_from_w == null ? $diet->time_from : $diet->time_from_w );?>:00
                                                 do <?=( $diet->time_to_w == null ? $diet->time_to : $diet->time_to_w );?>:00
                                             </li>
-                                        <? else: ?>
+                                        <?php else: ?>
                                             <li>bez dostawy</li>
-                                        <? endif; ?>
+                                        <?php endif; ?>
                                         </ul>
                                     </td>
                                     <td>
@@ -127,10 +127,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         </ul>
                                     </td>
                                 </tr>
-                                <? $first = false; ?>
-                            <? endforeach; ?>
-                        <? endforeach; ?>
-                <? endif; ?>
+                                <?php $first = false; ?>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                <?php endif; ?>
                 </table>
             </div>
             <div class = "col-sm-12 no-padding text-uppercase text-left about-user">
